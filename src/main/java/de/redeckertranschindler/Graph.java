@@ -62,8 +62,6 @@ public class Graph {
                 adj[0][i] = Integer.parseInt(parts[0]);
                 adj[1][i] = Integer.parseInt(parts[1]);
                 adj[2][i] = Integer.parseInt(parts[2]);
-
-                // dshkfjhsdkjf
             }
 
             myReader.close();
