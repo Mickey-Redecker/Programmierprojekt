@@ -120,7 +120,6 @@ public class Graph {
                         Nodes: %d
                         Edges: %d
                 """,
-                graphFilePath,
-                n, m);
+                graphFilePath, n, m);
     }
 }
