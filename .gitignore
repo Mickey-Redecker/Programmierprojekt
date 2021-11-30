@@ -1,7 +1,8 @@
 .classpath
 .project
 .settings/
-target/
+.target/
+projekt.code-workspace
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup

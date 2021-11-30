@@ -108,6 +108,7 @@ public class Graph {
             adjacencyList[SRCNODE][i] = Integer.parseInt(parts[0]);
             adjacencyList[TARGETNODE][i] = Integer.parseInt(parts[1]);
             adjacencyList[WEIGHT][i] = Integer.parseInt(parts[2]);
+
         }
 
         graphFileReader.close();
