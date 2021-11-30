@@ -17,7 +17,7 @@ public class Graph {
         int[][] adj = new int[0][0];
 
         try {
-            File myObj = new File("P:\\InputFileTest\\germany.fmi");
+            File myObj = new File("./src/main/resources/germany.fmi");
             Scanner myReader = new Scanner(myObj);
             for (int i = 0; i < 5; i++) {
                 myReader.nextLine();
@@ -73,5 +73,4 @@ public class Graph {
         System.out.println(((System.nanoTime() - time) / 1000000000) + " Sek.");
 
     }
-
 }
