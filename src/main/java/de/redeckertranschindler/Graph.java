@@ -79,20 +79,37 @@ public class Graph {
         offset = new int[n];
         adjacencyList = new int[3][m];
 
+        double minX = Double.MAX_VALUE;
+        double maxX = Double.MIN_VALUE;
+        double minY = Double.MAX_VALUE;
+        double maxY = Double.MIN_VALUE;
+
         for (int i = 0; i < n; i++) {
             String data = graphFileReader.nextLine();
             String[] parts = data.split(" ");
 
             int id = Integer.parseInt(parts[0]);
-            coordinates[X][id] = Double.parseDouble(parts[2]);
-            coordinates[Y][id] = Double.parseDouble(parts[3]);
+            double x = Double.parseDouble(parts[2]);
+            double y = Double.parseDouble(parts[3]);
+            coordinates[X][id] = x;
+            coordinates[Y][id] = y;
 
+            if (x < minX) {
+                minX = x;
+            } else if (x > maxX) {
+                maxX = x;
+            }
+            if (y < minY) {
+                minY = y;
+            } else if (y > maxY) {
+                maxY = y;
+            }
         }
 
         int src = 0;
         int counter = 0;
 
-        for (int i = 0; i < m; i++) {
+        for (int edgeID = 0; edgeID < m; edgeID++) {
             String data = graphFileReader.nextLine();
             String[] parts = data.split(" ");
             int currentSrc = Integer.parseInt(parts[0]);
@@ -105,9 +122,9 @@ public class Graph {
 
             counter++;
 
-            adjacencyList[SRCNODE][i] = Integer.parseInt(parts[0]);
-            adjacencyList[TARGETNODE][i] = Integer.parseInt(parts[1]);
-            adjacencyList[WEIGHT][i] = Integer.parseInt(parts[2]);
+            adjacencyList[SRCNODE][edgeID] = Integer.parseInt(parts[0]);
+            adjacencyList[TARGETNODE][edgeID] = Integer.parseInt(parts[1]);
+            adjacencyList[WEIGHT][edgeID] = Integer.parseInt(parts[2]);
 
         }
 
@@ -122,5 +139,9 @@ public class Graph {
                         Edges: %d
                 """,
                 graphFilePath, n, m);
+    }
+
+    public void dijkstra(final int startId, final int endId) {
+
     }
 }
