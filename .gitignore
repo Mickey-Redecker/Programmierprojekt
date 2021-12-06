@@ -2,6 +2,7 @@
 .project
 .settings/
 .target/
+.vscode/
 projekt.code-workspace
 pom.xml.tag
 pom.xml.releaseBackup
