@@ -18,6 +18,7 @@ public class Benchmark {
         System.out.println("Reading graph file " + graphPath);
         long graphReadStart = System.currentTimeMillis();
         // TODO: read graph here
+        // Graph g = new Graph(graphPath);
         long graphReadEnd = System.currentTimeMillis();
         System.out.println("\tgraph read took " + (graphReadEnd - graphReadStart) + "ms");
 

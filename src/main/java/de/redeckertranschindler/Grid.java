@@ -13,7 +13,7 @@ public class Grid {
 
     private final double cellSize;
 
-    private final int cellAmountX = 200;
+    private final int cellAmountX = 2;
     private final int cellAmountY;
 
     private final double minX;
@@ -26,12 +26,12 @@ public class Grid {
     public Grid(final double minX, final double maxX, final double minY, final double maxY, final double[][] nodes) {
 
         this.minX = minX;
-        this.maxX = maxX;
+        this.maxX = maxX + 0.001;
         this.minY = minY;
-        this.maxY = maxY;
+        this.maxY = maxY + 0.001;
 
-        double width = (maxX - minX);
-        double height = (maxY - minY);
+        double width = (this.maxX - this.minX);
+        double height = (this.maxY - this.minY);
 
         // size of an edge of a cell with square cells
         cellSize = width / cellAmountX;
@@ -47,9 +47,11 @@ public class Grid {
 
     private void insertNodes() {
 
-        for (int i = 0; i < coordinates.length; i++) {
+        for (int i = 0; i < coordinates[0].length; i++) {
             int cellX = (int) Math.floor((coordinates[X][i] - minX) / cellSize);
             int cellY = (int) Math.floor((coordinates[Y][i] - minY) / cellSize);
+
+            System.out.println(cellX + " " + cellY);
 
             grid[cellX][cellY].add(i);
         }
