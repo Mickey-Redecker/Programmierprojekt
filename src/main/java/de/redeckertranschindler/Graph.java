@@ -29,6 +29,11 @@ public class Graph {
      */
     private final int m;
 
+    private double minX;
+    private double maxX;
+    private double minY;
+    private double maxY;
+
     /**
      * Coordinates of all the Nodes
      * 
@@ -79,10 +84,10 @@ public class Graph {
         offset = new int[n];
         adjacencyList = new int[3][m];
 
-        double minX = Double.MAX_VALUE;
-        double maxX = Double.MIN_VALUE;
-        double minY = Double.MAX_VALUE;
-        double maxY = Double.MIN_VALUE;
+        minX = Double.MAX_VALUE;
+        maxX = Double.MIN_VALUE;
+        minY = Double.MAX_VALUE;
+        maxY = Double.MIN_VALUE;
 
         for (int i = 0; i < n; i++) {
             String data = graphFileReader.nextLine();
@@ -143,5 +148,19 @@ public class Graph {
 
     public void dijkstra(final int startId, final int endId) {
 
+    }
+
+    public Rectangle getBoundary() {
+        double width = maxX - minX;
+        double height = maxY - minY;
+
+        double dimension = width > height ? width : height;
+        double halfDimension = dimension / 2;
+
+        return new Rectangle(new Point(minX + halfDimension, minY + halfDimension), halfDimension);
+    }
+
+    public double[][] getNodes() {
+        return coordinates;
     }
 }
