@@ -97,24 +97,6 @@ public class Grid {
         return getClosestNode(x, y, new Cell(cellX, cellY));
     }
 
-    private class Cell {
-        private int x;
-        private int y;
-
-        public Cell(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public int getCellX() {
-            return this.x;
-        }
-
-        public int getCellY() {
-            return this.y;
-        }
-    }
-
     private int getClosestNode(final double x, final double y, final Cell sourceCell) {
 
         // null in first (0th) iteration
