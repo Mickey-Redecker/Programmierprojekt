@@ -3,9 +3,6 @@ package de.redeckertranschindler;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
-
-import javax.naming.spi.DirStateFactory.Result;
 
 import static de.redeckertranschindler.Graph.X;
 import static de.redeckertranschindler.Graph.Y;
@@ -118,45 +115,43 @@ public class Grid {
         }
     }
 
-    
     private int getClosestNode(final double x, final double y, final Cell sourceCell) {
-        
-        //null in first (0th) iteration
+
+        // null in first (0th) iteration
         Set<Cell> furtherCells = null;
 
         int iteration = 0;
 
-        //closestNode == -1 <==> no node found yet
+        // closestNode == -1 <==> no node found yet
         int closestNode = -1;
-        //newDistance == Double.MAX_VALUE <==> no node found yet
-        //distance between source and closest node found
+        // newDistance == Double.MAX_VALUE <==> no node found yet
+        // distance between source and closest node found
         double previousDistance = Double.MAX_VALUE;
 
         while (true) {
-            
-            
-            
 
-            //search all nodes in Cell for closer node, only during first (0th) iteration
+            // search all nodes in Cell for closer node, only during first (0th) iteration
             if (furtherCells == null) {
                 int numberNodesInCell = grid[sourceCell.getCellX()][sourceCell.getCellY()].size();
-                for(int i = 0; i < numberNodesInCell; i++) {
+                for (int i = 0; i < numberNodesInCell; i++) {
                     double distance = distance(x, y, (int) grid[sourceCell.getCellX()][sourceCell.getCellY()].get(i));
-                    if(distance < previousDistance) {
+                    if (distance < previousDistance) {
                         closestNode = (int) grid[sourceCell.getCellX()][sourceCell.getCellY()].get(i);
                         previousDistance = distance;
                     }
                 }
             }
-            //search all nodes in further cells for closer node, always unless in first (0th) iteration
+            // search all nodes in further cells for closer node, always unless in first
+            // (0th) iteration
             else {
                 for (Cell cell : furtherCells) {
-                    //only execute for cells that are actually present in the grid
+                    // only execute for cells that are actually present in the grid
                     if (cellAmountX >= cell.getCellX() && cellAmountY >= cell.getCellY()) {
                         int numberNodesInCell = grid[cell.getCellX()][cell.getCellY()].size();
-                        for(int i = 0; i < numberNodesInCell; i++) {
-                            double distance = distance(x, y, (int) grid[sourceCell.getCellX()][sourceCell.getCellY()].get(i));
-                            if(distance < previousDistance) {
+                        for (int i = 0; i < numberNodesInCell; i++) {
+                            double distance = distance(x, y,
+                                    (int) grid[sourceCell.getCellX()][sourceCell.getCellY()].get(i));
+                            if (distance < previousDistance) {
                                 closestNode = (int) grid[sourceCell.getCellX()][sourceCell.getCellY()].get(i);
                                 previousDistance = distance;
                             }
@@ -165,8 +160,7 @@ public class Grid {
                 }
             }
 
-
-            //decide in which directions furhter cells need to be searched 
+            // decide in which directions furhter cells need to be searched
             boolean furtherSearchNorth = false;
             boolean furtherSearchSouth = false;
             boolean furtherSearchEast = false;
@@ -195,34 +189,39 @@ public class Grid {
                 furtherSearchWest = true;
             }
 
-            //if no more cells need to be searched return closest node found, else continue preparing and executing new iteration
+            // if no more cells need to be searched return closest node found, else continue
+            // preparing and executing new iteration
             if (!furtherSearchNorth && !furtherSearchEast && !furtherSearchSouth && !furtherSearchWest) {
                 return closestNode;
             }
 
-            //decide which further cells need to be searched
+            // decide which further cells need to be searched
             furtherCells = new HashSet<Cell>();
-            
-            //check corner cells
+
+            // check corner cells
             if (furtherSearchNorth && furtherSearchEast) {
-                //TODO: Add nort-east corner cell
-                furtherCells.add(new Cell(sourceCell.getCellX() + 1 + iteration, sourceCell.getCellY() + 1 + iteration));
+                // TODO: Add nort-east corner cell
+                furtherCells
+                        .add(new Cell(sourceCell.getCellX() + 1 + iteration, sourceCell.getCellY() + 1 + iteration));
             }
 
             if (furtherSearchEast && furtherSearchSouth) {
-                furtherCells.add(new Cell(sourceCell.getCellX() + 1 + iteration, sourceCell.getCellY() - 1 - iteration));
+                furtherCells
+                        .add(new Cell(sourceCell.getCellX() + 1 + iteration, sourceCell.getCellY() - 1 - iteration));
             }
 
             if (furtherSearchSouth && furtherSearchWest) {
-                //TODO: Add south-west corner cell
-                furtherCells.add(new Cell(sourceCell.getCellX() - 1 - iteration, sourceCell.getCellY() - 1 - iteration));
+                // TODO: Add south-west corner cell
+                furtherCells
+                        .add(new Cell(sourceCell.getCellX() - 1 - iteration, sourceCell.getCellY() - 1 - iteration));
             }
 
             if (furtherSearchWest && furtherSearchNorth) {
-                furtherCells.add(new Cell(sourceCell.getCellX() - 1 - iteration, sourceCell.getCellY() + 1 + iteration));
+                furtherCells
+                        .add(new Cell(sourceCell.getCellX() - 1 - iteration, sourceCell.getCellY() + 1 + iteration));
             }
 
-            //check non-corner cells
+            // check non-corner cells
 
             if (furtherSearchNorth) {
                 for (int i = sourceCell.getCellX() - iteration; i <= sourceCell.getCellX() + iteration; i++) {
@@ -238,26 +237,22 @@ public class Grid {
 
             if (furtherSearchEast) {
                 for (int i = sourceCell.getCellY() - iteration; i <= sourceCell.getCellY() + iteration; i++) {
-                    furtherCells.add(new Cell(sourceCell.getCellX() + 1 + iteration , i));
+                    furtherCells.add(new Cell(sourceCell.getCellX() + 1 + iteration, i));
                 }
             }
 
             if (furtherSearchWest) {
                 for (int i = sourceCell.getCellY() - iteration; i <= sourceCell.getCellY() + iteration; i++) {
-                    furtherCells.add(new Cell(sourceCell.getCellX() - 1 - iteration , i));
+                    furtherCells.add(new Cell(sourceCell.getCellX() - 1 - iteration, i));
                 }
             }
 
-            
-            //furtherCells contains all further cells that need to be searched, start from beginning with next iteration
+            // furtherCells contains all further cells that need to be searched, start from
+            // beginning with next iteration
             iteration++;
 
         }
 
     }
-
-    
-
-    
 
 }
