@@ -89,6 +89,7 @@ public class Grid {
     // System.err.println("Kein Knoten im Graph!");
     // }
     // return closestNodeId;
+
     // }
 
     public int getClosestNode(final double x, final double y) {
