@@ -117,12 +117,14 @@ public class Grid {
 
             // search all nodes in Cell for closer node, only during first (0th) iteration
             if (furtherCells == null) {
-                int numberNodesInCell = grid[sourceCell.getCellX()][sourceCell.getCellY()].size();
-                for (int i = 0; i < numberNodesInCell; i++) {
-                    double distance = distance(x, y, (int) grid[sourceCell.getCellX()][sourceCell.getCellY()].get(i));
-                    if (distance < previousDistance) {
-                        closestNode = (int) grid[sourceCell.getCellX()][sourceCell.getCellY()].get(i);
-                        previousDistance = distance;
+                if (cellAmountX >= sourceCell.getCellX() && cellAmountY >= sourceCell.getCellY()) {
+                    int numberNodesInCell = grid[sourceCell.getCellX()][sourceCell.getCellY()].size();
+                    for (int i = 0; i < numberNodesInCell; i++) {
+                        double distance = distance(x, y, (int) grid[sourceCell.getCellX()][sourceCell.getCellY()].get(i));
+                        if (distance < previousDistance) {
+                            closestNode = (int) grid[sourceCell.getCellX()][sourceCell.getCellY()].get(i);
+                            previousDistance = distance;
+                        }
                     }
                 }
             }
@@ -135,9 +137,9 @@ public class Grid {
                         int numberNodesInCell = grid[cell.getCellX()][cell.getCellY()].size();
                         for (int i = 0; i < numberNodesInCell; i++) {
                             double distance = distance(x, y,
-                                    (int) grid[sourceCell.getCellX()][sourceCell.getCellY()].get(i));
+                                    (int) grid[cell.getCellX()][cell.getCellY()].get(i));
                             if (distance < previousDistance) {
-                                closestNode = (int) grid[sourceCell.getCellX()][sourceCell.getCellY()].get(i);
+                                closestNode = (int) grid[cell.getCellX()][cell.getCellY()].get(i);
                                 previousDistance = distance;
                             }
                         }
@@ -152,24 +154,24 @@ public class Grid {
             boolean furtherSearchWest = false;
 
             double northBorderY = cellSize * (sourceCell.getCellY() + iteration + 1);
-            double distanceToNorthBorder = northBorderY - y;
+            double distanceToNorthBorder = Math.abs(northBorderY - y);
             if (distanceToNorthBorder < previousDistance) {
                 furtherSearchNorth = true;
             }
 
-            double southBorderY = cellSize * (sourceCell.getCellY() + iteration);
-            double distanceToSouthBorder = southBorderY - y;
+            double southBorderY = cellSize * (sourceCell.getCellY() - iteration);
+            double distanceToSouthBorder = Math.abs(southBorderY - y);
             if (distanceToSouthBorder < previousDistance) {
                 furtherSearchSouth = true;
             }
 
             double eastBorderX = cellSize * (sourceCell.getCellX() + iteration + 1);
-            double distanceToEastBorder = eastBorderX - x;
+            double distanceToEastBorder = Math.abs(eastBorderX - x);
             if (distanceToEastBorder < previousDistance) {
                 furtherSearchEast = true;
             }
-            double westBorderX = cellSize * (sourceCell.getCellX() + iteration);
-            double distanceToWestBorder = westBorderX - x;
+            double westBorderX = cellSize * (sourceCell.getCellX() - iteration);
+            double distanceToWestBorder = Math.abs(westBorderX - x);
             if (distanceToWestBorder < previousDistance) {
                 furtherSearchWest = true;
             }
@@ -185,25 +187,21 @@ public class Grid {
 
             // check corner cells
             if (furtherSearchNorth && furtherSearchEast) {
-                // TODO: Add nort-east corner cell
-                furtherCells
-                        .add(new Cell(sourceCell.getCellX() + 1 + iteration, sourceCell.getCellY() + 1 + iteration));
+                
+                furtherCells.add(new Cell(sourceCell.getCellX() + 1 + iteration, sourceCell.getCellY() + 1 + iteration));
             }
 
             if (furtherSearchEast && furtherSearchSouth) {
-                furtherCells
-                        .add(new Cell(sourceCell.getCellX() + 1 + iteration, sourceCell.getCellY() - 1 - iteration));
+                furtherCells.add(new Cell(sourceCell.getCellX() + 1 + iteration, sourceCell.getCellY() - 1 - iteration));
             }
 
             if (furtherSearchSouth && furtherSearchWest) {
-                // TODO: Add south-west corner cell
-                furtherCells
-                        .add(new Cell(sourceCell.getCellX() - 1 - iteration, sourceCell.getCellY() - 1 - iteration));
+                
+                furtherCells.add(new Cell(sourceCell.getCellX() - 1 - iteration, sourceCell.getCellY() - 1 - iteration));
             }
 
             if (furtherSearchWest && furtherSearchNorth) {
-                furtherCells
-                        .add(new Cell(sourceCell.getCellX() - 1 - iteration, sourceCell.getCellY() + 1 + iteration));
+                furtherCells.add(new Cell(sourceCell.getCellX() - 1 - iteration, sourceCell.getCellY() + 1 + iteration));
             }
 
             // check non-corner cells
