@@ -2,12 +2,13 @@ package de.redeckertranschindler;
 
 import org.junit.Test;
 
+import de.redeckertranschindler.util.Point;
+
 import static de.redeckertranschindler.Graph.X;
 import static de.redeckertranschindler.Graph.Y;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 
 public class QuadTreeTest {
 
@@ -75,15 +76,15 @@ public class QuadTreeTest {
         try {
             long time = System.currentTimeMillis();
             Graph g = new Graph("E:\\Programmierprojekt\\germany.fmi");
-            System.out.println(System.currentTimeMillis() - time);
+            System.out.println("Read File: " + (System.currentTimeMillis() - time) + " ms");
             double[][] nodes = g.getNodes();
             time = System.currentTimeMillis();
             QuadTree t = new QuadTree(g);
 
-            System.out.println(System.currentTimeMillis() - time);
+            System.out.println("Generate Quadtree: " + (System.currentTimeMillis() - time) + " ms");
             time = System.currentTimeMillis();
             int id = t.getClosestNode(new Point(pX, pY));
-            System.out.println(System.currentTimeMillis() - time);
+            System.out.println("Find Closest Point: " + (System.currentTimeMillis() - time) + " ms");
             time = System.currentTimeMillis();
 
             System.out.println("point: " + id + " x: " + nodes[X][id] + " y: " +

@@ -2,7 +2,13 @@ package de.redeckertranschindler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
+
+import de.redeckertranschindler.util.Distance;
+import de.redeckertranschindler.util.Point;
+import de.redeckertranschindler.util.Rectangle;
 
 public class Graph {
 
@@ -134,6 +140,7 @@ public class Graph {
         }
 
         graphFileReader.close();
+        Distance.setCoordinates(coordinates);
     }
 
     @Override
@@ -162,5 +169,15 @@ public class Graph {
 
     public double[][] getNodes() {
         return coordinates;
+    }
+
+    public List<Integer> getIdList() {
+        List<Integer> elements = new LinkedList<>();
+
+        for (int i = 0; i < coordinates[0].length; i++) {
+            elements.add(i);
+        }
+
+        return elements;
     }
 }

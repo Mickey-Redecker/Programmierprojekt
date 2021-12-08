@@ -1,4 +1,4 @@
-package de.redeckertranschindler;
+package de.redeckertranschindler.util;
 
 public class Point {
     private final double x;
