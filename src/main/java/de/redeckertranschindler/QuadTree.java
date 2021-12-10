@@ -1,7 +1,6 @@
 package de.redeckertranschindler;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import de.redeckertranschindler.util.Point;
@@ -20,7 +19,7 @@ import static de.redeckertranschindler.util.Distance.distance;
  */
 public class QuadTree {
 
-    private static final int CAPACITY = 1000;
+    private static final int CAPACITY = 10000;
 
     private final double[][] coordinates;
 
@@ -76,10 +75,10 @@ public class QuadTree {
                 new Point(center.getX() + nextDimension, center.getY() - nextDimension),
                 nextDimension);
 
-        List<Integer> nw = new LinkedList<Integer>();
-        List<Integer> ne = new LinkedList<Integer>();
-        List<Integer> sw = new LinkedList<Integer>();
-        List<Integer> se = new LinkedList<Integer>();
+        List<Integer> nw = new ArrayList<Integer>();
+        List<Integer> ne = new ArrayList<Integer>();
+        List<Integer> sw = new ArrayList<Integer>();
+        List<Integer> se = new ArrayList<Integer>();
 
         for (Integer i : elements) {
             if (coordinates[X][i] < center.getX()) {

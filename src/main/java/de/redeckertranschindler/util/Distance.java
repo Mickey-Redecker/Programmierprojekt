@@ -19,4 +19,8 @@ public class Distance {
         return distance(p1.getX(), p1.getY(), coordinates[X][node2], coordinates[Y][node2]);
     }
 
+    public static final double distance(final double x1, final double y1, final int node2) {
+        return distance(x1, y1, coordinates[X][node2], coordinates[Y][node2]);
+    }
+
 }

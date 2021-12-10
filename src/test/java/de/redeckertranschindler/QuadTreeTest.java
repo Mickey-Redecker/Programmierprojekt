@@ -2,10 +2,12 @@ package de.redeckertranschindler;
 
 import org.junit.Test;
 
+import de.redeckertranschindler.util.Distance;
 import de.redeckertranschindler.util.Point;
 
 import static de.redeckertranschindler.Graph.X;
 import static de.redeckertranschindler.Graph.Y;
+
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
@@ -13,149 +15,113 @@ import java.io.FileNotFoundException;
 public class QuadTreeTest {
 
     @Test
-    public void testTree1() {
+    public void testGermanyRandompoint() {
+        double pX = 0d;
+        double pY = 0d;
 
-        double[][] nodes = new double[2][10];
-        double minX = 2;
-        double maxX = 10;
-        double minY = 2;
-        double maxY = 10;
-
-        nodes[X][0] = 2;
-        nodes[Y][0] = 2;
-
-        nodes[X][1] = 3;
-        nodes[Y][1] = 3;
-
-        nodes[X][2] = 2;
-        nodes[Y][2] = 3;
-
-        nodes[X][3] = 3;
-        nodes[Y][3] = 2;
-
-        nodes[X][4] = 4;
-        nodes[Y][4] = 4;
-
-        nodes[X][5] = 3;
-        nodes[Y][5] = 4;
-
-        nodes[X][6] = 4;
-        nodes[Y][6] = 3;
-
-        nodes[X][7] = 2;
-        nodes[Y][7] = 4;
-
-        nodes[X][8] = 4;
-        nodes[Y][8] = 2;
-
-        nodes[X][9] = 5;
-        nodes[Y][9] = 5;
-
-        double halfDimensionX = maxX - minX / 2;
-        double halfDimensionY = maxY - minY / 2;
-
-        double halfDimension = halfDimensionX > halfDimensionY ? halfDimensionX : halfDimensionY;
-
-        // QuadTree g = new QuadTree(new Rectangle(new Point(minX + halfDimension, minY
-        // + halfDimension), halfDimension),
-        // nodes);
-
-        // ArrayList<Integer> points = new ArrayList<>();
-        // int id = g.getClosestNode(new Point(2.1, 5));
-
-        // System.out.println("point: " + id + " x: " + nodes[X][id] + " y: " +
-        // nodes[Y][id]);
-
-    }
-
-    @Test
-    public void testTreeGermany() {
-        double pX = 49.82;
-        double pY = 8.8080;
+        long time = 0l;
+        long timeReadFile = 0l;
+        long timeQuadTree = 0l;
+        long timeClosestPoint = 0l;
 
         try {
-            long time = System.currentTimeMillis();
+            time = System.currentTimeMillis();
             Graph g = new Graph("E:\\Programmierprojekt\\germany.fmi");
-            System.out.println("Read File: " + (System.currentTimeMillis() - time) + " ms");
-            double[][] nodes = g.getNodes();
+            timeReadFile = System.currentTimeMillis() - time;
+            System.out.println("Read File: " + timeReadFile + " ms");
+
+            pX = g.getMinX() + (Math.random() * (g.getMaxX() - g.getMinX()));
+            pY = g.getMinY() + (Math.random() * (g.getMaxY() - g.getMinY()));
+
             time = System.currentTimeMillis();
             QuadTree t = new QuadTree(g);
+            timeQuadTree = System.currentTimeMillis() - time;
+            System.out.println("Generate Quadtree: " + timeQuadTree + " ms");
 
-            System.out.println("Generate Quadtree: " + (System.currentTimeMillis() - time) + " ms");
             time = System.currentTimeMillis();
             int id = t.getClosestNode(new Point(pX, pY));
-            System.out.println("Find Closest Point: " + (System.currentTimeMillis() - time) + " ms");
-            time = System.currentTimeMillis();
+            timeClosestPoint = System.currentTimeMillis() - time;
+            System.out.println("Find Closest Point: " + timeClosestPoint + " ms");
 
-            System.out.println("point: " + id + " x: " + nodes[X][id] + " y: " +
+            assertTrue("> 90 Sekunden gebraucht um die Graphdatei einzulesen!", timeReadFile < 90000);
+            assertTrue("> 1 Sekunde gebraucht um den nächsten Punkt zufinden!", timeClosestPoint < 1000);
+
+            double[][] nodes = g.getNodes();
+            System.out.println("Node: " + id + "\nx: " + nodes[X][id] + " y: " +
                     nodes[Y][id]);
 
             int idB = -1;
             double distanceB = Double.MAX_VALUE;
             for (int i = 0; i < nodes[0].length; i++) {
-                double d = Math.sqrt(Math.pow(pX - nodes[0][i], 2) + Math.pow(pY - nodes[1][i], 2));
+                double d = Distance.distance(pX, pY, i);
                 if (distanceB > d) {
                     distanceB = d;
                     idB = i;
                 }
             }
-            System.out.println(idB + " - " + id);
-            System.out.println(
-                    distanceB + " - " + Math.sqrt(Math.pow(pX - nodes[0][id], 2) + Math.pow(pY - nodes[1][id], 2)));
 
-            assertTrue(idB == id);
+            if (idB != id) {
+                System.out.println(idB + " - " + id);
+                System.out.println(
+                        distanceB + " - " + Math.sqrt(Math.pow(pX - nodes[0][id], 2) + Math.pow(pY - nodes[1][id], 2)));
+            }
+            assertTrue("Bruteforce fand einen anderen näheren Punkt!", idB == id);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
     }
 
     @Test
-    public void testTree2() {
+    public void testGermanyFixpoint() {
+        double pX = 49.82;
+        double pY = 8.8080;
 
-        double[][] nodes = new double[2][10];
-        double minX = Double.MAX_VALUE;
-        double maxX = Double.MIN_VALUE;
-        double minY = Double.MAX_VALUE;
-        double maxY = Double.MIN_VALUE;
+        long time = 0l;
+        long timeReadFile = 0l;
+        long timeQuadTree = 0l;
+        long timeClosestPoint = 0l;
 
-        for (int i = 0; i < nodes[0].length; i++) {
-            double valueX = Math.random();
-            double valueY = Math.random();
-            if (valueX > maxX) {
-                maxX = valueX;
+        try {
+            time = System.currentTimeMillis();
+            Graph g = new Graph("E:\\Programmierprojekt\\germany.fmi");
+            timeReadFile = System.currentTimeMillis() - time;
+            System.out.println("Read File: " + timeReadFile + " ms");
+
+            time = System.currentTimeMillis();
+            QuadTree t = new QuadTree(g);
+            timeQuadTree = System.currentTimeMillis() - time;
+            System.out.println("Generate Quadtree: " + timeQuadTree + " ms");
+
+            time = System.currentTimeMillis();
+            int id = t.getClosestNode(new Point(pX, pY));
+            timeClosestPoint = System.currentTimeMillis() - time;
+            System.out.println("Find Closest Point: " + timeClosestPoint + " ms");
+
+            assertTrue("> 90 Sekunden gebraucht um die Graphdatei einzulesen!", timeReadFile < 90000);
+            assertTrue("> 1 Sekunde gebraucht um den nächsten Punkt zufinden!", timeClosestPoint < 1000);
+
+            double[][] nodes = g.getNodes();
+            System.out.println("Node: " + id + "\nx: " + nodes[X][id] + " y: " +
+                    nodes[Y][id]);
+
+            int idB = -1;
+            double distanceB = Double.MAX_VALUE;
+            for (int i = 0; i < nodes[0].length; i++) {
+                double d = Distance.distance(pX, pY, i);
+                if (distanceB > d) {
+                    distanceB = d;
+                    idB = i;
+                }
             }
-            if (valueX < minX) {
-                minX = valueX;
+
+            if (idB != id) {
+                System.out.println(idB + " - " + id);
+                System.out.println(
+                        distanceB + " - " + Math.sqrt(Math.pow(pX - nodes[0][id], 2) + Math.pow(pY - nodes[1][id], 2)));
             }
-            if (valueY > maxY) {
-                maxY = valueY;
-            }
-            if (valueY < minY) {
-                minY = valueY;
-            }
-            nodes[X][i] = Math.random();
-            nodes[Y][i] = Math.random();
+            assertTrue("Bruteforce fand einen anderen näheren Punkt!", idB == id);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-
-        System.out.println(minX + ", " + maxX + ", " + minY + ", " + maxY);
-
-        double halfDimensionX = maxX - minX / 2;
-        double halfDimensionY = maxY - minY / 2;
-
-        // double halfDimension = halfDimensionX > halfDimensionY ? halfDimensionX :
-        // halfDimensionY;
-
-        // QuadTree g = new QuadTree(new Rectangle(new Point(minX + halfDimension, minY
-        // + halfDimension), halfDimension),
-        // nodes);
-
-        // ArrayList<Integer> points = new ArrayList<>();
-        // g.queryRange(new Rectangle(new Point(0.5, 0.5), 0.10), points);
-
-        // System.out.println(points.toString());
-
-        // System.out.println("Point: x=" + nodes[X][id] + ", y=" + nodes[Y][id]);
     }
-
 }

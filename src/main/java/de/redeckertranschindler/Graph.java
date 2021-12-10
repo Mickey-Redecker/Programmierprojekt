@@ -2,7 +2,7 @@ package de.redeckertranschindler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -172,12 +172,28 @@ public class Graph {
     }
 
     public List<Integer> getIdList() {
-        List<Integer> elements = new LinkedList<>();
+        List<Integer> elements = new ArrayList<>(n);
 
-        for (int i = 0; i < coordinates[0].length; i++) {
+        for (int i = 0; i < n; i++) {
             elements.add(i);
         }
 
         return elements;
+    }
+
+    public double getMaxX() {
+        return maxX;
+    }
+
+    public double getMaxY() {
+        return maxY;
+    }
+
+    public double getMinX() {
+        return minX;
+    }
+
+    public double getMinY() {
+        return minY;
     }
 }
