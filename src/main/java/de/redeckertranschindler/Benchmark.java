@@ -56,7 +56,9 @@ public class Benchmark {
 
         // ask user for a target node id
         System.out.print("Enter target node id... ");
-        int targetNodeId = (new Scanner(System.in)).nextInt();
+        Scanner scanner = new Scanner(System.in);
+        int targetNodeId = (scanner).nextInt();
+        scanner.close();
         int oneToAllDistance = -42;
         // TODO set oneToAllDistance to the distance from sourceNodeId to
         // targetNodeId as computed by the one-to-all Dijkstra
