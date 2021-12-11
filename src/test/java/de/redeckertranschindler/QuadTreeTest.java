@@ -75,7 +75,6 @@ public class QuadTreeTest {
     public void testGermanyFixpoint() {
         double pX = 49.82;
         double pY = 8.8080;
-
         long time = 0l;
         long timeReadFile = 0l;
         long timeQuadTree = 0l;
