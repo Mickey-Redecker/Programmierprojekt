@@ -1,14 +1,14 @@
 package de.redeckertranschindler;
 
+import static de.redeckertranschindler.Graph.X;
+import static de.redeckertranschindler.Graph.Y;
+import static de.redeckertranschindler.util.Distance.distance;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import de.redeckertranschindler.util.Point;
 import de.redeckertranschindler.util.Rectangle;
-
-import static de.redeckertranschindler.Graph.X;
-import static de.redeckertranschindler.Graph.Y;
-import static de.redeckertranschindler.util.Distance.distance;
 
 /**
  * Quadtree implementation for a given graph.
@@ -23,7 +23,7 @@ public class QuadTree {
 
     private final double[][] coordinates;
 
-    private Rectangle boundary;
+    private final Rectangle boundary;
     private List<Integer> points;
 
     private final QuadTree northWest;
@@ -47,7 +47,7 @@ public class QuadTree {
             this.southWest = null;
 
         } else {
-            QuadTree[] children = createQuadTree(elements);
+            final QuadTree[] children = createQuadTree(elements);
 
             this.northWest = children[0];
             this.northEast = children[1];
@@ -58,29 +58,29 @@ public class QuadTree {
 
     private QuadTree[] createQuadTree(final List<Integer> elements) {
 
-        Point center = boundary.getCenter();
-        double halfDimension = boundary.getHalfDimension();
-        double nextDimension = halfDimension / 2;
+        final Point center = boundary.getCenter();
+        final double halfDimension = boundary.getHalfDimension();
+        final double nextDimension = halfDimension / 2;
 
-        Rectangle topLeftBox = new Rectangle(
+        final Rectangle topLeftBox = new Rectangle(
                 new Point(center.getX() - nextDimension, center.getY() + nextDimension),
                 nextDimension);
-        Rectangle topRightBox = new Rectangle(
+        final Rectangle topRightBox = new Rectangle(
                 new Point(center.getX() + nextDimension, center.getY() + nextDimension),
                 nextDimension);
-        Rectangle bottomLeftBox = new Rectangle(
+        final Rectangle bottomLeftBox = new Rectangle(
                 new Point(center.getX() - nextDimension, center.getY() - nextDimension),
                 nextDimension);
-        Rectangle bottomRightBox = new Rectangle(
+        final Rectangle bottomRightBox = new Rectangle(
                 new Point(center.getX() + nextDimension, center.getY() - nextDimension),
                 nextDimension);
 
-        List<Integer> nw = new ArrayList<Integer>();
-        List<Integer> ne = new ArrayList<Integer>();
-        List<Integer> sw = new ArrayList<Integer>();
-        List<Integer> se = new ArrayList<Integer>();
+        final List<Integer> nw = new ArrayList<Integer>();
+        final List<Integer> ne = new ArrayList<Integer>();
+        final List<Integer> sw = new ArrayList<Integer>();
+        final List<Integer> se = new ArrayList<Integer>();
 
-        for (Integer i : elements) {
+        for (final Integer i : elements) {
             if (coordinates[X][i] < center.getX()) {
                 if (coordinates[Y][i] < center.getY()) {
                     sw.add(i);
@@ -96,7 +96,7 @@ public class QuadTree {
             }
         }
 
-        QuadTree[] res = new QuadTree[4];
+        final QuadTree[] res = new QuadTree[4];
 
         res[0] = new QuadTree(nw, topLeftBox, coordinates);
         res[1] = new QuadTree(ne, topRightBox, coordinates);
@@ -117,7 +117,7 @@ public class QuadTree {
                 southEast.rangeQuery(results, range);
             } else {
 
-                for (Integer i : points) {
+                for (final Integer i : points) {
                     if (range.containsPoint(new Point(coordinates[X][i], coordinates[Y][i]))) {
                         results.add(i);
                     }
@@ -133,19 +133,18 @@ public class QuadTree {
      * @return id of the closest point
      */
     public int getClosestNode(final Point p) {
-        double s = 0.1;
+        final double s = 0.1;
         Rectangle range = new Rectangle(p, s);
 
-        int nodeId = -1;
         double minDistance = Double.MAX_VALUE;
         int n = -1;
 
-        while (nodeId < 0) {
+        while (true) {
 
-            List<Integer> results = new ArrayList<>();
+            final List<Integer> results = new ArrayList<>();
             rangeQuery(results, range);
-            for (Integer i : results) {
-                double currentDistance = distance(p, i);
+            for (final Integer i : results) {
+                final double currentDistance = distance(p, i);
                 if (minDistance > currentDistance) {
                     n = i;
                     minDistance = currentDistance;
@@ -158,7 +157,5 @@ public class QuadTree {
                 range = new Rectangle(p, range.getHalfDimension() + s);
             }
         }
-
-        return nodeId;
     }
 }
