@@ -117,11 +117,6 @@ public class Graph {
         for (int edgeID = 0; edgeID < m; edgeID++) {
 
             final String data = graphReader.readLine();
-
-            if (edgeID == 0 || edgeID == 16549386) {
-                System.out.println(data);
-            }
-
             final String[] parts = data.split(" ");
             final int currentSrc = Integer.parseInt(parts[0]);
             if (currentSrc != src) {
