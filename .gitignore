@@ -1,9 +1,6 @@
 .classpath
 .project
 .settings/
-.target/
-.vscode/
-.idea/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -13,3 +10,13 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.logs
+*.iml
+.vscode/
+.idea/
+.eclipse

@@ -98,7 +98,6 @@ public class GraphTest {
         int closestNode = tree.getClosestNode(p);
         assertTrue(0 <= closestNode && graph.getNodes()[0].length > closestNode);
 
-        System.out.println(closestNode);
         double[][] nodes = graph.getNodes();
         double distance = Double.MAX_VALUE;
         int id = -1;
