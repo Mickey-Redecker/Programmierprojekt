@@ -30,7 +30,7 @@ public class Benchmark {
         long graphReadEnd = System.currentTimeMillis();
         System.out.println("\tgraph read took " + (graphReadEnd - graphReadStart) + "ms");
 
-        System.out.println("Generating quadtree, n = " + g.getNodes()[0].length);
+        System.out.println("Generating quadtree, n = " + g.getNodeAmount());
         System.out.println("\ttime is not critical!");
         long generateTreeStart = System.currentTimeMillis();
         QuadTree tree = new QuadTree(g);
@@ -39,7 +39,7 @@ public class Benchmark {
 
         System.out.println("Finding closest node to coordinates " + lon + " " + lat);
         long nodeFindStart = System.currentTimeMillis();
-        int nodeId = tree.getClosestNode(new Point(lon, lat));
+        int nodeId = tree.getClosestNode(new Point(lat, lon));
         long nodeFindEnd = System.currentTimeMillis();
         System.out.println("\tfound node: " + nodeId);
         System.out.println("\tfinding node took " + (nodeFindEnd - nodeFindStart) + "ms");
@@ -70,10 +70,9 @@ public class Benchmark {
         // ask user for a target node id
         System.out.print("Enter target node id... ");
         Scanner scanner = new Scanner(System.in);
-        int targetNodeId = (scanner).nextInt();
+        int targetNodeId = scanner.nextInt();
         scanner.close();
-        int oneToAllDistance = -42;
-        oneToAllDistance = distancesFromStart[targetNodeId];
+        int oneToAllDistance = distancesFromStart[targetNodeId];
         System.out.println("Distance from " + sourceNodeId + " to " + targetNodeId + " is " + oneToAllDistance);
     }
 

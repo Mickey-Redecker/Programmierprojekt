@@ -170,6 +170,10 @@ public class Graph {
         return new Rectangle(new Point(minX + halfDimension, minY + halfDimension), halfDimension);
     }
 
+    public int getNodeAmount() {
+        return n;
+    }
+
     public double[][] getNodes() {
         return coordinates;
     }

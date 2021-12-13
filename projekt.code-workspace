@@ -21,21 +21,20 @@
         "type": "java",
         "name": "Launch Current File",
         "request": "launch",
-        "mainClass": "${file}"
-      },
-      {
-        "type": "java",
-        "name": "Launch App",
-        "request": "launch",
-        "mainClass": "de.redeckertranschindler.App",
-        "projectName": "projekt"
+        "mainClass": "${file}",
+        // "args": "-graph "C:\\Users\\Danny Tran\\Desktop\\Programmierprojekt\\germany.fmi" -lon 9.098 -lat 48.746 -que -------fehlt!--------- -s 638394" // Danny
+        // "args": "-graph D:\\other\\germany(1).fmi -lon 9.098 -lat 48.746 -que -------fehlt!--------- -s 638394" // Mickey
+        "args": "-graph E:\\Programmierprojekt\\germany.fmi -lon 9.098 -lat 48.746 -que E:\\Programmierprojekt\\Benchs\\germany.que -s 638394" // Simon
       },
       {
         "type": "java",
         "name": "Launch Benchmark",
         "request": "launch",
         "mainClass": "de.redeckertranschindler.Benchmark",
-        "projectName": "projekt"
+        "projectName": "projekt",
+        // "args": "-graph "C:\\Users\\Danny Tran\\Desktop\\Programmierprojekt\\germany.fmi" -lon 9.098 -lat 48.746 -que -------fehlt!--------- -s 638394" // Danny
+        // "args": "-graph D:\\other\\germany(1).fmi -lon 9.098 -lat 48.746 -que -------fehlt!--------- -s 638394" // Mickey
+        "args": "-graph E:\\Programmierprojekt\\germany.fmi -lon 9.098 -lat 48.746 -que E:\\Programmierprojekt\\Benchs\\germany.que -s 638394" // Simon
       }
     ]
   }
