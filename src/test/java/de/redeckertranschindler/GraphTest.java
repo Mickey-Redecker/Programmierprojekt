@@ -112,7 +112,7 @@ public class GraphTest {
         assertTrue(id == closestNode);
     }
 
-    @RepeatedTest(20)
+    @RepeatedTest(40)
     @Order(5)
     @Timeout(value = 1, unit = TimeUnit.SECONDS) // Hat overhead wegen Bruteforce-Check!
     public void closestPointRandom() {
