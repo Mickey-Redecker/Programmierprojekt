@@ -1,7 +1,22 @@
 # Programmierprojekt
+
 Programmierprojekt WS 21/22 Schindler &amp; Tran &amp; Redecker
 
+## Requirements
+
+- Maven
+- Java JDK 16
+
+## Compiling
+
+Im Root-Folder vom Projekt (Bei pom.xml)
+
+```
+mvn compile
+```
+
 ## Running
+
 Im Root-Folder vom Projekt (Bei pom.xml)
 
 ```
