@@ -150,12 +150,14 @@ public class Graph {
                 graphFilePath, n, m);
     }
 
-    public double oneToOneDijkstra(final int startId, final int endId) {
-        return 0d;
+    public int oneToOneDijkstra(final int startId, final int endId) {
+
+        return 0;
     }
 
-    public double[] oneToAllDijkstra(final int startId) {
-        return new double[n];
+    public int[] oneToAllDijkstra(final int startId) {
+
+        return new int[n];
     }
 
     public Rectangle getBoundary() {
