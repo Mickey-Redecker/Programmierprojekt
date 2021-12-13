@@ -8,9 +8,8 @@
   <artifactId>projekt</artifactId>
   <version>1.0</version>
 
-  <name>projekt</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <name>Programmierprojekt</name>
+  <url>https://github.com/Zwiebelroschd/Programmierprojekt/tree/master#programmierprojekt</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
