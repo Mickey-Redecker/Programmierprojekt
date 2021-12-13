@@ -1,10 +1,10 @@
 package de.redeckertranschindler;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import de.redeckertranschindler.util.Distance;
 import de.redeckertranschindler.util.Point;
@@ -65,26 +65,20 @@ public class Graph {
      * Generates a Graph ready to use!
      * 
      * @param graphFilePath path to the specificly formated .fmi file
-     * @throws FileNotFoundException
+     * @throws IOException
      */
-    public Graph(final String graphFilePath) throws FileNotFoundException {
+    public Graph(final String graphFilePath) throws IOException {
 
         this.graphFilePath = graphFilePath;
-        File graphFile = new File(graphFilePath);
-        Scanner graphFileReader;
-        try {
-            graphFileReader = new Scanner(graphFile);
-        } catch (FileNotFoundException e) {
-            throw new FileNotFoundException("Die angegebene Graphdatei konnte nicht geöffnet werden!");
-        }
+        final FileReader graphFileReader = new FileReader(graphFilePath);
+        final BufferedReader graphReader = new BufferedReader(graphFileReader);
 
-        // We don't care about the first 5 lines
         for (int i = 0; i < 5; i++) {
-            graphFileReader.nextLine();
+            graphReader.readLine();
         }
 
-        n = Integer.parseInt(graphFileReader.nextLine());
-        m = Integer.parseInt(graphFileReader.nextLine());
+        n = Integer.parseInt(graphReader.readLine());
+        m = Integer.parseInt(graphReader.readLine());
 
         coordinates = new double[2][n];
         offset = new int[n];
@@ -96,12 +90,12 @@ public class Graph {
         maxY = Double.MIN_VALUE;
 
         for (int i = 0; i < n; i++) {
-            String data = graphFileReader.nextLine();
-            String[] parts = data.split(" ");
+            final String data = graphReader.readLine();
+            final String[] parts = data.split(" ");
 
-            int id = Integer.parseInt(parts[0]);
-            double x = Double.parseDouble(parts[2]);
-            double y = Double.parseDouble(parts[3]);
+            final int id = Integer.parseInt(parts[0]);
+            final double x = Double.parseDouble(parts[2]);
+            final double y = Double.parseDouble(parts[3]);
             coordinates[X][id] = x;
             coordinates[Y][id] = y;
 
@@ -121,9 +115,10 @@ public class Graph {
         int counter = 0;
 
         for (int edgeID = 0; edgeID < m; edgeID++) {
-            String data = graphFileReader.nextLine();
-            String[] parts = data.split(" ");
-            int currentSrc = Integer.parseInt(parts[0]);
+
+            final String data = graphReader.readLine();
+            final String[] parts = data.split(" ");
+            final int currentSrc = Integer.parseInt(parts[0]);
             if (currentSrc != src) {
                 offset[src] = counter;
 
@@ -139,7 +134,9 @@ public class Graph {
 
         }
 
+        graphReader.close();
         graphFileReader.close();
+
         Distance.setCoordinates(coordinates);
     }
 
@@ -158,11 +155,11 @@ public class Graph {
     }
 
     public Rectangle getBoundary() {
-        double width = maxX - minX;
-        double height = maxY - minY;
+        final double width = maxX - minX;
+        final double height = maxY - minY;
 
-        double dimension = width > height ? width : height;
-        double halfDimension = dimension / 2;
+        final double dimension = width > height ? width : height;
+        final double halfDimension = dimension / 2;
 
         return new Rectangle(new Point(minX + halfDimension, minY + halfDimension), halfDimension);
     }
@@ -171,8 +168,12 @@ public class Graph {
         return coordinates;
     }
 
+    public int[][] getEdges() {
+        return adjacencyList;
+    }
+
     public List<Integer> getIdList() {
-        List<Integer> elements = new ArrayList<>(n);
+        final List<Integer> elements = new ArrayList<>(n);
 
         for (int i = 0; i < n; i++) {
             elements.add(i);

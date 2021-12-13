@@ -1,5 +1,7 @@
 package de.redeckertranschindler;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import de.redeckertranschindler.util.Distance;
@@ -9,8 +11,6 @@ import static de.redeckertranschindler.Graph.X;
 import static de.redeckertranschindler.Graph.Y;
 
 import static org.junit.Assert.assertTrue;
-
-import java.io.FileNotFoundException;
 
 public class QuadTreeTest {
 
@@ -66,7 +66,7 @@ public class QuadTreeTest {
                         distanceB + " - " + Math.sqrt(Math.pow(pX - nodes[0][id], 2) + Math.pow(pY - nodes[1][id], 2)));
             }
             assertTrue("Bruteforce fand einen anderen näheren Punkt!", idB == id);
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -75,7 +75,6 @@ public class QuadTreeTest {
     public void testGermanyFixpoint() {
         double pX = 49.82;
         double pY = 8.8080;
-
         long time = 0l;
         long timeReadFile = 0l;
         long timeQuadTree = 0l;
@@ -120,7 +119,7 @@ public class QuadTreeTest {
                         distanceB + " - " + Math.sqrt(Math.pow(pX - nodes[0][id], 2) + Math.pow(pY - nodes[1][id], 2)));
             }
             assertTrue("Bruteforce fand einen anderen näheren Punkt!", idB == id);
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
