@@ -4,7 +4,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
 
 import de.redeckertranschindler.util.Distance;
 import de.redeckertranschindler.util.Point;
@@ -112,21 +118,17 @@ public class Graph {
         }
 
         int src = 0;
-        int counter = 0;
 
         for (int edgeID = 0; edgeID < m; edgeID++) {
-
             final String data = graphReader.readLine();
             final String[] parts = data.split(" ");
             final int currentSrc = Integer.parseInt(parts[0]);
             if (currentSrc != src) {
-                offset[src] = counter;
-
+                for (int i = src + 1; i <= currentSrc; i++) {
+                    offset[i] = edgeID;
+                }
                 src = currentSrc;
-                counter = 0;
             }
-
-            counter++;
 
             adjacencyList[SRCNODE][edgeID] = Integer.parseInt(parts[0]);
             adjacencyList[TARGETNODE][edgeID] = Integer.parseInt(parts[1]);
@@ -157,7 +159,57 @@ public class Graph {
 
     public int[] oneToAllDijkstra(final int startId) {
 
-        return new int[n];
+        final int[] distances = new int[n];
+        final int[] previousNode = new int[n];
+        final boolean[] finished = new boolean[n];
+
+        final Queue<Integer> priorityQueue = new PriorityQueue<>(n, new Comparator<Integer>() {
+            @Override
+            public int compare(final Integer node1, final Integer node2) {
+                return distances[node1] - distances[node2];
+            };
+        });
+
+        previousNode[startId] = startId;
+        for (int i = 0; i < n; i++) {
+            distances[i] = Integer.MAX_VALUE;
+        }
+        distances[startId] = 0;
+        priorityQueue.add(startId);
+
+        while (!priorityQueue.isEmpty()) {
+
+            int srcNode = priorityQueue.poll();
+
+            if (!finished[srcNode]) {
+
+                finished[srcNode] = true;
+
+                int startOfEdges = offset[srcNode];
+                int endOfEdges = srcNode == n - 1 ? m : offset[srcNode + 1];
+
+                for (int i = startOfEdges; i < endOfEdges; i++) {
+                    int weight = adjacencyList[WEIGHT][i];
+                    int targetNode = adjacencyList[TARGETNODE][i];
+
+                    if (distances[targetNode] > distances[srcNode] + weight) {
+                        distances[targetNode] = distances[srcNode] + weight;
+                        previousNode[targetNode] = srcNode;
+
+                        priorityQueue.add(targetNode);
+                        continue;
+                    }
+
+                    if (!finished[targetNode]) {
+                        priorityQueue.add(targetNode);
+                    }
+
+                }
+
+            }
+        }
+
+        return distances;
     }
 
     public Rectangle getBoundary() {
