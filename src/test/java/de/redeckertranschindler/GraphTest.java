@@ -32,7 +32,7 @@ public class GraphTest {
 
     // String graphFilePath = "E:\\Programmierprojekt\\germany.fmi"; // Danny
     // String graphFilePath = "E:\\Programmierprojekt\\germany.fmi"; // Mickey
-    String graphFilePath = "E:\\Programmierprojekt\\germany.fmi"; // Simon
+    String graphFilePath = "C:\\Users\\Danny Tran\\Desktop\\Programmierprojekt\\germany.fmi"; // Simon
 
     static Stream<Arguments> fixPointProvider() {
         return Stream.of(

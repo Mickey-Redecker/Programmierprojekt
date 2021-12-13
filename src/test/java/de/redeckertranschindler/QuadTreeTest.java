@@ -26,7 +26,8 @@ public class QuadTreeTest {
 
         try {
             time = System.currentTimeMillis();
-            Graph g = new Graph("E:\\Programmierprojekt\\germany.fmi");
+            //Graph g = new Graph("E:\\Programmierprojekt\\germany.fmi");
+            Graph g = new Graph("C:\\Users\\Danny Tran\\Desktop\\Programmierprojekt\\germany.fmi"); // Danny
             timeReadFile = System.currentTimeMillis() - time;
             System.out.println("Read File: " + timeReadFile + " ms");
 
