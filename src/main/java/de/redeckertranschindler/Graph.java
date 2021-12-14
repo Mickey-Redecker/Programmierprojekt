@@ -151,7 +151,64 @@ public class Graph {
 
     public int oneToOneDijkstra(final int startId, final int endId) {
 
-        return 0;
+        final int[] distances = new int[n];
+        final int[] previousNode = new int[n];
+        final boolean[] finished = new boolean[n];
+
+        final Queue<Integer> priorityQueue = new PriorityQueue<>(n, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer node1, Integer node2) {
+                return distances[node1] - distances[node2];
+            }
+        });
+
+        previousNode[startId] = startId;
+        for (int i = 0; i < n; i++) {
+            distances[i] = Integer.MAX_VALUE;
+        }
+        distances[startId] = 0;
+        priorityQueue.add(startId);
+
+        while (!priorityQueue.isEmpty()) {
+
+            int srcNode = priorityQueue.poll();
+
+            // Difference to OneToAll
+            if (srcNode == endId) {
+                return distances[endId];
+            }
+            // ----------------------
+
+            if (!finished[srcNode]) {
+
+                finished[srcNode] = true;
+
+                int startOfEdges = offset[srcNode];
+                int endOfEdges = srcNode == n - 1 ? m : offset[srcNode + 1];
+
+                for (int i = startOfEdges; i < endOfEdges; i++) {
+                    int weight = adjacencyList[WEIGHT][i];
+                    int targetNode = adjacencyList[TARGETNODE][i];
+
+                    if (distances[targetNode] > distances[srcNode] + weight) {
+                        distances[targetNode] = distances[srcNode] + weight;
+                        previousNode[targetNode] = srcNode;
+
+                        priorityQueue.add(targetNode);
+                        continue;
+                    }
+
+                    if (!finished[targetNode]) {
+                        priorityQueue.add(targetNode);
+                    }
+
+                }
+
+            }
+        }
+
+        // should never happen...
+        return Integer.MAX_VALUE;
     }
 
     public int[] oneToAllDijkstra(final int startId) {
@@ -162,9 +219,9 @@ public class Graph {
 
         final Queue<Integer> priorityQueue = new PriorityQueue<>(n, new Comparator<Integer>() {
             @Override
-            public int compare(final Integer node1, final Integer node2) {
+            public int compare(Integer node1, Integer node2) {
                 return distances[node1] - distances[node2];
-            };
+            }
         });
 
         previousNode[startId] = startId;

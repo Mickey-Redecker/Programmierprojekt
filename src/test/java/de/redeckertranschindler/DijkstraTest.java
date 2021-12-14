@@ -9,24 +9,31 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 
 @TestMethodOrder(OrderAnnotation.class)
 public class DijkstraTest {
 
     // String graphFilePath = "C:\\Users\\Danny
     // Tran\\Desktop\\Programmierprojekt\\germany.fmi"; // Danny
+
     // String graphFilePath = "D:\\other\\germany(1).fmi"; // Mickey
+
     String graphFilePath = "E:\\Programmierprojekt\\germany.fmi"; // Simon
     String toyGraphFilePath = "E:\\Programmierprojekt\\toy.fmi"; // Simon
+    String germanyQue = "E:\\Programmierprojekt\\Benchs\\germany.que"; // Simon
+    String germanySol = "E:\\Programmierprojekt\\Benchs\\germany.sol"; // Simon
 
     private static Graph graph;
 
@@ -119,6 +126,37 @@ public class DijkstraTest {
         assertEquals(649227, distances[16743658]);
         assertEquals(649163, distances[16743659]);
         assertEquals(648996, distances[16743660]);
+    }
+
+    @Test
+    @Order(5)
+    public void runGermanyOneToOneDijkstra() throws FileNotFoundException, IOException {
+
+        final FileReader queFileReader = new FileReader(germanyQue);
+        final BufferedReader queReader = new BufferedReader(queFileReader);
+
+        final FileReader solFileReader = new FileReader(germanySol);
+        final BufferedReader solReader = new BufferedReader(solFileReader);
+
+        int counter = 0;
+
+        while (queReader.ready()) {
+
+            final String line = queReader.readLine();
+            final String[] parts = line.split(" ");
+            final int start = Integer.valueOf(parts[0]);
+            final int end = Integer.valueOf(parts[1]);
+            final int expected = Integer.valueOf(solReader.readLine());
+
+            final int res = graph.oneToOneDijkstra(start, end);
+
+            System.out.println(++counter);
+
+            assertEquals(expected, res);
+        }
+
+        queReader.close();
+        solReader.close();
     }
 
 }
