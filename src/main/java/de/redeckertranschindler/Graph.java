@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+import de.redeckertranschindler.util.DijkstraResult;
 import de.redeckertranschindler.util.Distance;
 import de.redeckertranschindler.util.Point;
 import de.redeckertranschindler.util.Rectangle;
@@ -149,7 +150,7 @@ public class Graph {
                 graphFilePath, n, m);
     }
 
-    public int oneToOneDijkstra(final int startId, final int endId) {
+    public DijkstraResult oneToOneDijkstra(final int startId, final int endId) {
 
         final int[] distances = new int[n];
         final int[] previousNode = new int[n];
@@ -175,7 +176,7 @@ public class Graph {
 
             // Difference to OneToAll
             if (srcNode == endId) {
-                return distances[endId];
+                break;
             }
             // ----------------------
 
@@ -207,11 +208,10 @@ public class Graph {
             }
         }
 
-        // should never happen...
-        return Integer.MAX_VALUE;
+        return new DijkstraResult(distances, previousNode, endId);
     }
 
-    public int[] oneToAllDijkstra(final int startId) {
+    public DijkstraResult oneToAllDijkstra(final int startId) {
 
         final int[] distances = new int[n];
         final int[] previousNode = new int[n];
@@ -263,8 +263,16 @@ public class Graph {
             }
         }
 
-        return distances;
+        return new DijkstraResult(distances, previousNode);
+
     }
+
+    // public List<List<Integer>> getshortestPath(final int start, final int target)
+    // {
+    // List<List<Integer>> result = new ArrayList<>();
+
+    // return result;
+    // }
 
     public Rectangle getBoundary() {
         final double width = maxX - minX;

@@ -63,7 +63,7 @@ public class DijkstraTest {
     @Order(2)
     @Timeout(value = 15, unit = TimeUnit.SECONDS)
     public void runToyDijkstra() {
-        int[] distances = graph.oneToAllDijkstra(2);
+        int[] distances = graph.oneToAllDijkstra(2).distance;
 
         assertEquals(6, distances[0]);
         assertEquals(5, distances[1]);
@@ -99,7 +99,7 @@ public class DijkstraTest {
     @Order(4)
     @Timeout(value = 15, unit = TimeUnit.SECONDS)
     public void runDijkstra() {
-        int[] distances = graph.oneToAllDijkstra(8371825);
+        int[] distances = graph.oneToAllDijkstra(8371825).distance;
 
         assertEquals(648681, distances[16743651]);
         assertEquals(649433, distances[16743652]);
@@ -133,7 +133,7 @@ public class DijkstraTest {
             final int end = Integer.valueOf(parts[1]);
             final int expected = Integer.valueOf(solReader.readLine());
 
-            final int res = graph.oneToOneDijkstra(start, end);
+            final int res = graph.oneToOneDijkstra(start, end).distance[end];
 
             System.out.println(++counter);
 

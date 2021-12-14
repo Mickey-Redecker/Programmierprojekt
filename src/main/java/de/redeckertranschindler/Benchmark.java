@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
+import de.redeckertranschindler.util.DijkstraResult;
 import de.redeckertranschindler.util.Point;
 
 public class Benchmark {
@@ -51,7 +52,10 @@ public class Benchmark {
             while ((currLine = bufferedReader.readLine()) != null) {
                 final int oneToOneSourceNodeId = Integer.parseInt(currLine.substring(0, currLine.indexOf(" ")));
                 final int oneToOneTargetNodeId = Integer.parseInt(currLine.substring(currLine.indexOf(" ") + 1));
-                final int oneToOneDistance = g.oneToOneDijkstra(oneToOneSourceNodeId, oneToOneTargetNodeId);
+
+                final DijkstraResult res = g.oneToOneDijkstra(oneToOneSourceNodeId, oneToOneTargetNodeId);
+
+                final int oneToOneDistance = res.distance[oneToOneTargetNodeId];
                 System.out.println(oneToOneDistance);
             }
         } catch (final IOException e) {
@@ -63,7 +67,7 @@ public class Benchmark {
 
         System.out.println("Computing one-to-all Dijkstra from node id " + sourceNodeId);
         final long oneToAllStart = System.currentTimeMillis();
-        final int[] distancesFromStart = g.oneToAllDijkstra(sourceNodeId);
+        final int[] distancesFromStart = g.oneToAllDijkstra(sourceNodeId).distance;
         final long oneToAllEnd = System.currentTimeMillis();
         System.out.println("\tone-to-all Dijkstra took " + (oneToAllEnd - oneToAllStart) + "ms");
 
