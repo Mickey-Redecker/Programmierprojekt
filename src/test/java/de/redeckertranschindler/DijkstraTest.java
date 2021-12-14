@@ -24,15 +24,17 @@ import org.junit.jupiter.api.Timeout;
 @TestMethodOrder(OrderAnnotation.class)
 public class DijkstraTest {
 
-    // String graphFilePath = "C:\\Users\\Danny
-    // Tran\\Desktop\\Programmierprojekt\\germany.fmi"; // Danny
-
     // String graphFilePath = "D:\\other\\germany(1).fmi"; // Mickey
 
-    String graphFilePath = "E:\\Programmierprojekt\\germany.fmi"; // Simon
+    String graphFilePath = "C:\\Users\\Danny Tran\\Desktop\\Programmierprojekt\\germany.fmi"; // Danny
+    String toyGraphFilePath = "C:\\Users\\Danny Tran\\Desktop\\Programmierprojekt\\toy.fmi"; // Danny
+    String germanyQue = "C:\\Users\\Danny Tran\\Desktop\\Programmierprojekt\\germany.que"; // Danny
+    String germanySol = "C:\\Users\\Danny Tran\\Desktop\\Programmierprojekt\\germany.sol"; // Danny
+
+/*  String graphFilePath = "E:\\Programmierprojekt\\germany.fmi"; // Simon
     String toyGraphFilePath = "E:\\Programmierprojekt\\toy.fmi"; // Simon
     String germanyQue = "E:\\Programmierprojekt\\Benchs\\germany.que"; // Simon
-    String germanySol = "E:\\Programmierprojekt\\Benchs\\germany.sol"; // Simon
+    String germanySol = "E:\\Programmierprojekt\\Benchs\\germany.sol"; // Simon*/
 
     private static Graph graph;
 
