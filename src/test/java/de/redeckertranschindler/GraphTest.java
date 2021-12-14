@@ -49,25 +49,19 @@ public class GraphTest {
     @Test
     @Order(1)
     @Timeout(value = 90, unit = TimeUnit.SECONDS)
-    public void loadGraph() {
+    public void loadGraph() throws IOException {
         assertTrue(new File(graphFilePath).isFile(), "Graph-Datei existiert nicht!");
 
-        try {
-            graph = new Graph(graphFilePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        graph = new Graph(graphFilePath);
 
-        assertNotNull(graph);
-
-        double[][] nodes = graph.getNodes();
-        int n = nodes[0].length;
+        final double[][] nodes = graph.getNodes();
+        final int n = nodes[0].length;
         for (int i = 0; i < n; i++) {
             assertTrue(nodes[X][i] != 0);
             assertTrue(nodes[Y][i] != 0);
         }
 
-        int[][] edges = graph.getEdges();
+        final int[][] edges = graph.getEdges();
         for (int i = 0; i < edges[0].length; i++) {
             assertTrue(edges[SRCNODE][i] >= 0 && edges[SRCNODE][i] < n);
             assertTrue(edges[TARGETNODE][i] >= 0 && edges[TARGETNODE][i] < n);
@@ -94,15 +88,15 @@ public class GraphTest {
         assumeTrue(graph != null);
         assumeTrue(tree != null);
 
-        Point p = new Point(x, y);
-        int closestNode = tree.getClosestNode(p);
+        final Point p = new Point(x, y);
+        final int closestNode = tree.getClosestNode(p);
         assertTrue(0 <= closestNode && graph.getNodes()[0].length > closestNode);
 
-        double[][] nodes = graph.getNodes();
+        final double[][] nodes = graph.getNodes();
         double distance = Double.MAX_VALUE;
         int id = -1;
         for (int i = 0; i < nodes[0].length; i++) {
-            double currentDistance = Distance.distance(p, i);
+            final double currentDistance = Distance.distance(p, i);
             if (currentDistance < distance) {
                 distance = currentDistance;
                 id = i;
@@ -119,17 +113,17 @@ public class GraphTest {
         assumeTrue(graph != null);
         assumeTrue(tree != null);
 
-        double x = graph.getMinX() + (Math.random() * (graph.getMaxX() - graph.getMinX()));
-        double y = graph.getMinY() + (Math.random() * (graph.getMaxY() - graph.getMinY()));
-        Point p = new Point(x, y);
-        int closestNode = tree.getClosestNode(p);
+        final double x = graph.getMinX() + (Math.random() * (graph.getMaxX() - graph.getMinX()));
+        final double y = graph.getMinY() + (Math.random() * (graph.getMaxY() - graph.getMinY()));
+        final Point p = new Point(x, y);
+        final int closestNode = tree.getClosestNode(p);
         assertTrue(0 <= closestNode && graph.getNodes()[0].length > closestNode);
 
-        double[][] nodes = graph.getNodes();
+        final double[][] nodes = graph.getNodes();
         double distance = Double.MAX_VALUE;
         int id = -1;
         for (int i = 0; i < nodes[0].length; i++) {
-            double currentDistance = Distance.distance(p, i);
+            final double currentDistance = Distance.distance(p, i);
             if (currentDistance < distance) {
                 distance = currentDistance;
                 id = i;

@@ -6,7 +6,6 @@ import static de.redeckertranschindler.Graph.WEIGHT;
 import static de.redeckertranschindler.Graph.X;
 import static de.redeckertranschindler.Graph.Y;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
@@ -40,16 +39,10 @@ public class DijkstraTest {
     @Test
     @Order(1)
     @Timeout(value = 90, unit = TimeUnit.SECONDS)
-    public void loadToyGraph() {
+    public void loadToyGraph() throws IOException {
         assertTrue(new File(toyGraphFilePath).isFile(), "Graph-Datei existiert nicht!");
 
-        try {
-            graph = new Graph(toyGraphFilePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        assertNotNull(graph);
+        graph = new Graph(toyGraphFilePath);
 
         double[][] nodes = graph.getNodes();
         int n = nodes[0].length;
@@ -64,8 +57,6 @@ public class DijkstraTest {
             assertTrue(edges[TARGETNODE][i] >= 0 && edges[TARGETNODE][i] < n);
             assertTrue(edges[WEIGHT][i] >= 0);
         }
-
-        System.out.println(graph.toString());
     }
 
     @Test
@@ -84,16 +75,10 @@ public class DijkstraTest {
     @Test
     @Order(3)
     @Timeout(value = 90, unit = TimeUnit.SECONDS)
-    public void loadGraph() {
+    public void loadGraph() throws IOException {
         assertTrue(new File(graphFilePath).isFile(), "Graph-Datei existiert nicht!");
 
-        try {
-            graph = new Graph(graphFilePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        assertNotNull(graph);
+        graph = new Graph(graphFilePath);
 
         double[][] nodes = graph.getNodes();
         int n = nodes[0].length;

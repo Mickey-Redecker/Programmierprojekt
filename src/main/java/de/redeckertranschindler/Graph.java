@@ -157,7 +157,7 @@ public class Graph {
 
         final Queue<Integer> priorityQueue = new PriorityQueue<>(n, new Comparator<Integer>() {
             @Override
-            public int compare(Integer node1, Integer node2) {
+            public int compare(final Integer node1, final Integer node2) {
                 return distances[node1] - distances[node2];
             }
         });
@@ -171,7 +171,7 @@ public class Graph {
 
         while (!priorityQueue.isEmpty()) {
 
-            int srcNode = priorityQueue.poll();
+            final int srcNode = priorityQueue.poll();
 
             // Difference to OneToAll
             if (srcNode == endId) {
@@ -183,12 +183,12 @@ public class Graph {
 
                 finished[srcNode] = true;
 
-                int startOfEdges = offset[srcNode];
-                int endOfEdges = srcNode == n - 1 ? m : offset[srcNode + 1];
+                final int startOfEdges = offset[srcNode];
+                final int endOfEdges = srcNode == n - 1 ? m : offset[srcNode + 1];
 
                 for (int i = startOfEdges; i < endOfEdges; i++) {
-                    int weight = adjacencyList[WEIGHT][i];
-                    int targetNode = adjacencyList[TARGETNODE][i];
+                    final int weight = adjacencyList[WEIGHT][i];
+                    final int targetNode = adjacencyList[TARGETNODE][i];
 
                     if (distances[targetNode] > distances[srcNode] + weight) {
                         distances[targetNode] = distances[srcNode] + weight;
@@ -219,7 +219,7 @@ public class Graph {
 
         final Queue<Integer> priorityQueue = new PriorityQueue<>(n, new Comparator<Integer>() {
             @Override
-            public int compare(Integer node1, Integer node2) {
+            public int compare(final Integer node1, final Integer node2) {
                 return distances[node1] - distances[node2];
             }
         });
@@ -233,18 +233,18 @@ public class Graph {
 
         while (!priorityQueue.isEmpty()) {
 
-            int srcNode = priorityQueue.poll();
+            final int srcNode = priorityQueue.poll();
 
             if (!finished[srcNode]) {
 
                 finished[srcNode] = true;
 
-                int startOfEdges = offset[srcNode];
-                int endOfEdges = srcNode == n - 1 ? m : offset[srcNode + 1];
+                final int startOfEdges = offset[srcNode];
+                final int endOfEdges = srcNode == n - 1 ? m : offset[srcNode + 1];
 
                 for (int i = startOfEdges; i < endOfEdges; i++) {
-                    int weight = adjacencyList[WEIGHT][i];
-                    int targetNode = adjacencyList[TARGETNODE][i];
+                    final int weight = adjacencyList[WEIGHT][i];
+                    final int targetNode = adjacencyList[TARGETNODE][i];
 
                     if (distances[targetNode] > distances[srcNode] + weight) {
                         distances[targetNode] = distances[srcNode] + weight;

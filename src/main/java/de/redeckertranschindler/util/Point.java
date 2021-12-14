@@ -10,16 +10,15 @@ public class Point {
     }
 
     public double getX() {
-        return this.x;
+        return x;
     }
 
     public double getY() {
-        return this.y;
+        return y;
     }
 
     @Override
     public String toString() {
-        return "Point: (" + this.x + ", " + this.y + ")";
+        return "Point: (" + this.x + ", " + this.y + ") " + super.toString();
     }
-
 }
