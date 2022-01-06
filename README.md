@@ -25,6 +25,6 @@ java -cp ./target/classes de.redeckertranschindler.Benchmark -graph /home/felix/
 
  - Bei -graph argument den Pfad zur Graph-Datei angeben,  
  - Bei -lon argument den Längengrad angeben  
- - Bei -lat den Breitengrad angeben,  
- - Bei -que den Pfad zur .que-Datei für den one-to-one-dijkstra angeben  
+ - Bei -lat argument den Breitengrad angeben,  
+ - Bei -que argument den Pfad zur .que-Datei für den one-to-one-dijkstra angeben  
  - Bei -s argument den Startknoten für den one-to-all-dijkstra angeben  
