@@ -11,6 +11,10 @@ public class Distance {
         Distance.coordinates = coordinates;
     }
 
+    /**
+     *
+     * @return the distance between two points
+     */
     public static double distance(final double x1, final double y1, final double x2, final double y2) {
         return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
     }

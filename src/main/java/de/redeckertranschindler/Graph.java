@@ -52,12 +52,12 @@ public class Graph {
     private final double[][] coordinates;
 
     /**
-     * An offset for each Node to know where to iterate through the adjacencylist
+     * An offset for each Node to know where to iterate through the AdjacencyList
      */
     private final int[] offset;
 
     /**
-     * Adjacencylist of all Edges
+     * AdjacencyList of all Edges
      * 
      * First dimension: information
      * Second dimension: Node-Id
@@ -67,7 +67,7 @@ public class Graph {
     /**
      * Generates a Graph ready to use!
      * 
-     * @param graphFilePath path to the specificly formated .fmi file
+     * @param graphFilePath path to the specific formatted .fmi file
      * @throws IOException
      */
     public Graph(final String graphFilePath) throws IOException {
@@ -76,7 +76,7 @@ public class Graph {
         final FileReader graphFileReader = new FileReader(graphFilePath);
         final BufferedReader graphReader = new BufferedReader(graphFileReader);
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) { // skip first 5 lines of .fmi file
             graphReader.readLine();
         }
 
@@ -94,7 +94,7 @@ public class Graph {
 
         for (int i = 0; i < n; i++) {
             final String data = graphReader.readLine();
-            final String[] parts = data.split(" ");
+            final String[] parts = data.split(" "); // skip white spaces
 
             final int id = Integer.parseInt(parts[0]);
             final double x = Double.parseDouble(parts[2]);
@@ -149,6 +149,13 @@ public class Graph {
                 graphFilePath, n, m);
     }
 
+    /**
+     *calculates the  distance between two nodes via Dijkstra algorithm
+     *
+     * @param startId coordinates of the start node
+     * @param endId coordinates of the target node
+     * @return shortest distance from starting node to target node
+     */
     public int oneToOneDijkstra(final int startId, final int endId) {
 
         final int[] distances = new int[n];
@@ -178,7 +185,7 @@ public class Graph {
                 return distances[endId];
             }
             // ----------------------
-
+            // bereits bearbeitete Knoten
             if (!finished[srcNode]) {
 
                 finished[srcNode] = true;
@@ -211,6 +218,12 @@ public class Graph {
         return Integer.MAX_VALUE;
     }
 
+    /**
+     * Given a positively weighted graph and a starting node, Dijkstra determines the shortest path and distance
+     * from the source to all destinations in the graph
+     * @param startId
+     * @return shortest distances from starting node to all nodes in graph
+     */
     public int[] oneToAllDijkstra(final int startId) {
 
         final int[] distances = new int[n];
@@ -265,6 +278,7 @@ public class Graph {
 
         return distances;
     }
+
 
     public Rectangle getBoundary() {
         final double width = maxX - minX;

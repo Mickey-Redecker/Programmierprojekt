@@ -13,7 +13,7 @@ import de.redeckertranschindler.util.Rectangle;
 /**
  * Quadtree implementation for a given graph.
  * 
- * Quadtree gets fully generated in the constructor and ist ready to use after.
+ * Quadtree gets fully generated in the constructor and is ready to use after.
  * 
  * You can quickly find the closest point in this graph to a given coordinate.
  */
@@ -56,6 +56,13 @@ public class QuadTree {
         }
     }
 
+    /**
+     *creates a Quadtree given a list with elements(coordinates) and
+     *the elements are distributed recursively to four child nodes
+     *
+     * @param elements
+     * @return
+     */
     private QuadTree[] createQuadTree(final List<Integer> elements) {
 
         final Point center = boundary.getCenter();
@@ -80,6 +87,7 @@ public class QuadTree {
         final List<Integer> sw = new ArrayList<Integer>();
         final List<Integer> se = new ArrayList<Integer>();
 
+        // Check coordinates belongs to which partition
         for (final Integer i : elements) {
             if (coordinates[X][i] < center.getX()) {
                 if (coordinates[Y][i] < center.getY()) {
@@ -107,6 +115,13 @@ public class QuadTree {
 
     }
 
+    /**
+     *Performs a two-dimensional range query and adds all elements in the
+     *selected area to the result list.
+     *
+     * @param results
+     * @param range
+     */
     private void rangeQuery(final List<Integer> results, final Rectangle range) {
         if (this.boundary.intersects(range)) {
 

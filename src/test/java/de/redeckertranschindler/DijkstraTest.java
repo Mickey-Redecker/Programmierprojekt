@@ -26,8 +26,8 @@ public class DijkstraTest {
 
     // String graphFilePath = "D:\\other\\germany(1).fmi"; // Mickey
 
-    String graphFilePath = "C:\\Users\\Danny Tran\\Desktop\\Programmierprojekt\\germany.fmi"; // Danny
-    String toyGraphFilePath = "C:\\Users\\Danny Tran\\Desktop\\Programmierprojekt\\toy.fmi"; // Danny
+    String graphFilePath = "C:\\Users\\Danny Tran\\Desktop\\Programmierprojekt\\germany.fmi\\germany.fmi"; // Danny
+    String toyGraphFilePath = "C:\\Users\\Danny Tran\\Desktop\\Programmierprojekt\\Benchs\\toy.fmi"; // Danny
     String germanyQue = "C:\\Users\\Danny Tran\\Desktop\\Programmierprojekt\\germany.que"; // Danny
     String germanySol = "C:\\Users\\Danny Tran\\Desktop\\Programmierprojekt\\germany.sol"; // Danny
 
