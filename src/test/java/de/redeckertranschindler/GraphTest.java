@@ -30,7 +30,7 @@ import de.redeckertranschindler.util.Point;
 @TestMethodOrder(OrderAnnotation.class)
 public class GraphTest {
     // String graphFilePath = "D:\\other\\germany(1).fmi"; // Mickey
-    String graphFilePath = "C:\\Users\\Danny Tran\\Desktop\\Programmierprojekt\\germany.fmi"; // Danny
+    String graphFilePath = "C:\\Users\\Danny Tran\\Desktop\\Programmierprojekt\\germany.fmi\\germany.fmi"; // Danny
     //String graphFilePath = "E:\\Programmierprojekt\\germany.fmi"; // Simon
 
     static Stream<Arguments> fixPointProvider() {
