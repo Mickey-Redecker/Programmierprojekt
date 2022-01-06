@@ -2,6 +2,8 @@
 
 Programmierprojekt WS 21/22 Schindler &amp; Tran &amp; Redecker
 
+Zugehöriges [GitHub Repository](https://github.com/Zwiebelroschd/Programmierprojekt).
+
 ## Requirements
 
 - Maven
