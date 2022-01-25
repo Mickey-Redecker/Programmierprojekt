@@ -188,7 +188,7 @@ public class Graph {
             final int srcNode = entry.id;
 
             if (endId >= 0 && srcNode == endId) {
-                return new DijkstraResult(distances, previousNode);
+                return new DijkstraResult(distances, previousNode, startId);
 
             }
 
@@ -218,7 +218,7 @@ public class Graph {
             }
         }
 
-        return new DijkstraResult(distances, previousNode);
+        return new DijkstraResult(distances, previousNode, startId);
     }
 
     // public List<List<Integer>> getshortestPath(final int start, final int target)

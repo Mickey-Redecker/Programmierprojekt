@@ -24,6 +24,8 @@ public class Server {
     private final Graph g;
     private final QuadTree tree;
 
+    DijkstraResult dijkstraResult;
+
     public Server(final String graphPath, final int port) throws IOException {
 
         g = new Graph(graphPath);
@@ -31,8 +33,13 @@ public class Server {
 
         final HttpServer server = HttpServer.create(new InetSocketAddress("localhost", port), 0);
 
-        final HttpContext indexContext = server.createContext("/");
+        final HttpContext indexContext = server.createContext("/index");
         indexContext.setHandler(this::handlePages);
+        final HttpContext leafletContext = server.createContext("/leaflet");
+        leafletContext.setHandler(this::handlePages);
+
+        final HttpContext dijkstraContext = server.createContext("/dijkstra");
+        dijkstraContext.setHandler(this::handleDijkstraRequest);
 
         final HttpContext pathContext = server.createContext("/path");
         pathContext.setHandler(this::handlePathRequest);
@@ -41,9 +48,8 @@ public class Server {
         closestContext.setHandler(this::handleClosestRequest);
 
         server.start();
-
         System.out.println("server started");
-
+        System.out.println("http://localhost:80/index.html");
     }
 
     private void handleClosestRequest(final HttpExchange exchange) throws IOException {
@@ -79,14 +85,49 @@ public class Server {
         coordinateList.add(coordinates[X][node]);
 
         final String response = Integer.toString(node) + """
-
                 { \"type\": \"Point\",
                     \"coordinates\":
                 """ + coordinateList.toString() + """
-                }
+                    }
                 """;
 
+        exchange.getResponseHeaders().set("Content-Type", "application/json");
         exchange.sendResponseHeaders(200, response.getBytes().length);
+
+        final OutputStream os = exchange.getResponseBody();
+        os.write(response.getBytes());
+        os.close();
+    }
+
+    private void handleDijkstraRequest(final HttpExchange exchange) throws IOException {
+        final URI requestURI = exchange.getRequestURI();
+        final String query = requestURI.getQuery();
+
+        final String[] parts = query.split("&");
+
+        int src = -1;
+        for (int i = 0; i < parts.length; i++) {
+            if (parts[i].startsWith("src=")) {
+                src = Integer.valueOf(parts[i].substring(4));
+            }
+        }
+
+        if (src < 0) {
+            final String errorResponse = "Wrong Requestformat!";
+            exchange.sendResponseHeaders(200, errorResponse.getBytes().length);
+            final OutputStream os = exchange.getResponseBody();
+            os.write(errorResponse.getBytes());
+            os.close();
+            return;
+        }
+
+        dijkstraResult = g.dijkstra(src);
+
+        final String response = "";
+
+        exchange.getResponseHeaders().set("Content-Type", "text/plain");
+        exchange.sendResponseHeaders(200, response.getBytes().length);
+
         final OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());
         os.close();
@@ -120,7 +161,15 @@ public class Server {
         final List<List<Double>> resList = new ArrayList<>();
 
         final double[][] coordinates = g.getNodes();
-        final DijkstraResult dijkstraResult = g.dijkstra(src, target);
+        if (!(dijkstraResult.src == src)) {
+            final String errorResponse = "Wrong startnode!";
+            exchange.sendResponseHeaders(200, errorResponse.getBytes().length);
+            final OutputStream os = exchange.getResponseBody();
+            os.write(errorResponse.getBytes());
+            os.close();
+            return;
+        }
+
         int currentNode = target;
 
         while (currentNode != src) {
@@ -136,13 +185,9 @@ public class Server {
         point.add(coordinates[X][src]);
         resList.add(point);
 
-        final String response = """
-                { \"type\": \"LineString\",
-                    \"coordinates\":
-                """ + resList.toString() + """
-                }
-                """;
+        final String response = "{\"type\": \"LineString\", \"coordinates\": " + resList.toString() + "}";
 
+        exchange.getResponseHeaders().set("Content-Type", "application/json");
         exchange.sendResponseHeaders(200, response.getBytes().length);
 
         final OutputStream os = exchange.getResponseBody();
@@ -153,25 +198,14 @@ public class Server {
     public void handlePages(HttpExchange t) throws IOException {
         String root = "src/main/resources";
         URI uri = t.getRequestURI();
-        System.out.println(uri.getPath() + " ist hier");
         File file = new File(root + uri.getPath()).getCanonicalFile();
-        // if (!file.getPath().startsWith(root)) {
-        // // Suspected path traversal attack: reject with 403 error.
-        // String response = "403 (Forbidden)\n";
-        // t.sendResponseHeaders(403, response.length());
-        // OutputStream os = t.getResponseBody();
-        // os.write(response.getBytes());
-        // os.close();
-        // } else
         if (!file.isFile()) {
-            // Object does not exist or is not a file: reject with 404 error.
             String response = "404 (Not Found)\n";
             t.sendResponseHeaders(404, response.length());
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();
         } else {
-            // Object exists and is a file: accept with response code 200.
             t.sendResponseHeaders(200, 0);
             OutputStream os = t.getResponseBody();
             FileInputStream fs = new FileInputStream(file);
