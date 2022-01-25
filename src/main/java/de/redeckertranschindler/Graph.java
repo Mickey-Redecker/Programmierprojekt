@@ -12,6 +12,7 @@ import java.util.Queue;
 import de.redeckertranschindler.util.Distance;
 import de.redeckertranschindler.util.Point;
 import de.redeckertranschindler.util.Rectangle;
+import de.redeckertranschindler.util.Tupel;
 
 public class Graph {
 
@@ -149,91 +150,98 @@ public class Graph {
                 graphFilePath, n, m);
     }
 
-    /**
-     *calculates the  distance between two nodes via Dijkstra algorithm
-     *
-     * @param startId coordinates of the start node
-     * @param endId coordinates of the target node
-     * @return shortest distance from starting node to target node
-     */
-    public int oneToOneDijkstra(final int startId, final int endId) {
+    // /**
+    // * calculates the distance between two nodes via Dijkstra algorithm
+    // *
+    // * @param startId coordinates of the start node
+    // * @param endId coordinates of the target node
+    // * @return shortest distance from starting node to target node
+    // */
+    // public int oneToOneDijkstra(final int startId, final int endId) {
 
-        final int[] distances = new int[n];
-        final int[] previousNode = new int[n];
-        final boolean[] finished = new boolean[n];
+    // final int[] distances = new int[n];
+    // final int[] previousNode = new int[n];
+    // final boolean[] finished = new boolean[n];
 
-        final Queue<Integer> priorityQueue = new PriorityQueue<>(n, new Comparator<Integer>() {
-            @Override
-            public int compare(final Integer node1, final Integer node2) {
-                return distances[node1] - distances[node2];
-            }
-        });
+    // final Queue<Integer> priorityQueue = new PriorityQueue<>(n, new
+    // Comparator<Integer>() {
+    // @Override
+    // public int compare(final Integer node1, final Integer node2) {
+    // return distances[node1] - distances[node2];
+    // }
+    // });
 
-        previousNode[startId] = startId;
-        for (int i = 0; i < n; i++) {
-            distances[i] = Integer.MAX_VALUE;
-        }
-        distances[startId] = 0;
-        priorityQueue.add(startId);
+    // previousNode[startId] = startId;
+    // for (int i = 0; i < n; i++) {
+    // distances[i] = Integer.MAX_VALUE;
+    // }
+    // distances[startId] = 0;
+    // priorityQueue.add(startId);
 
-        while (!priorityQueue.isEmpty()) {
+    // while (!priorityQueue.isEmpty()) {
 
-            final int srcNode = priorityQueue.poll();
+    // final int srcNode = priorityQueue.poll();
 
-            // Difference to OneToAll
-            if (srcNode == endId) {
-                return distances[endId];
-            }
-            // ----------------------
-            // bereits bearbeitete Knoten
-            if (!finished[srcNode]) {
+    // // Difference to OneToAll
+    // if (endId >= 0 && srcNode == endId) {
+    // return distances[endId];
+    // }
+    // // ----------------------
+    // // bereits bearbeitete Knoten
+    // if (!finished[srcNode]) {
 
-                finished[srcNode] = true;
+    // finished[srcNode] = true;
 
-                final int startOfEdges = offset[srcNode];
-                final int endOfEdges = srcNode == n - 1 ? m : offset[srcNode + 1];
+    // final int startOfEdges = offset[srcNode];
+    // final int endOfEdges = srcNode == n - 1 ? m : offset[srcNode + 1];
 
-                for (int i = startOfEdges; i < endOfEdges; i++) {
-                    final int weight = adjacencyList[WEIGHT][i];
-                    final int targetNode = adjacencyList[TARGETNODE][i];
+    // for (int i = startOfEdges; i < endOfEdges; i++) {
+    // final int weight = adjacencyList[WEIGHT][i];
+    // final int targetNode = adjacencyList[TARGETNODE][i];
 
-                    if (distances[targetNode] > distances[srcNode] + weight) {
-                        distances[targetNode] = distances[srcNode] + weight;
-                        previousNode[targetNode] = srcNode;
+    // if (distances[targetNode] > distances[srcNode] + weight) {
+    // distances[targetNode] = distances[srcNode] + weight;
+    // previousNode[targetNode] = srcNode;
 
-                        priorityQueue.add(targetNode);
-                        continue;
-                    }
+    // priorityQueue.add(targetNode);
+    // continue;
+    // }
 
-                    if (!finished[targetNode]) {
-                        priorityQueue.add(targetNode);
-                    }
+    // if (!finished[targetNode]) {
+    // priorityQueue.add(targetNode);
+    // }
 
-                }
+    // }
 
-            }
-        }
+    // }
+    // }
 
-        // should never happen...
-        return Integer.MAX_VALUE;
+    // // should never happen...
+    // return Integer.MAX_VALUE;
+    // }
+
+    public int[] dijkstra(final int startId) {
+        return dijkstra(startId, -1);
     }
 
     /**
-     * Given a positively weighted graph and a starting node, Dijkstra determines the shortest path and distance
+     * Given a positively weighted graph and a starting node, Dijkstra determines
+     * the shortest path and distance
      * from the source to all destinations in the graph
+     * 
      * @param startId
      * @return shortest distances from starting node to all nodes in graph
      */
-    public int[] oneToAllDijkstra(final int startId) {
+    public int[] dijkstra(final int startId, final int endId) {
 
         final int[] distances = new int[n];
         final int[] previousNode = new int[n];
         final boolean[] finished = new boolean[n];
 
-        final Queue<Integer> priorityQueue = new PriorityQueue<>(n, new Comparator<Integer>() {
+        final Queue<Tupel> priorityQueue = new PriorityQueue<>(n, new Comparator<Tupel>() {
             @Override
-            public int compare(final Integer node1, final Integer node2) {
-                return distances[node1] - distances[node2];
+            public int compare(final Tupel node1, final Tupel node2) {
+                return node1.distance - node2.distance;
             }
         });
 
@@ -242,11 +250,16 @@ public class Graph {
             distances[i] = Integer.MAX_VALUE;
         }
         distances[startId] = 0;
-        priorityQueue.add(startId);
+        priorityQueue.add(new Tupel(startId, 0));
 
         while (!priorityQueue.isEmpty()) {
 
-            final int srcNode = priorityQueue.poll();
+            final Tupel entry = priorityQueue.poll();
+            final int srcNode = entry.id;
+
+            if (endId >= 0 && srcNode == endId) {
+                return distances;
+            }
 
             if (!finished[srcNode]) {
 
@@ -263,22 +276,19 @@ public class Graph {
                         distances[targetNode] = distances[srcNode] + weight;
                         previousNode[targetNode] = srcNode;
 
-                        priorityQueue.add(targetNode);
+                        priorityQueue.add(new Tupel(targetNode, distances[targetNode]));
                         continue;
                     }
 
                     if (!finished[targetNode]) {
-                        priorityQueue.add(targetNode);
+                        priorityQueue.add(new Tupel(targetNode, distances[targetNode]));
                     }
-
                 }
-
             }
         }
 
         return distances;
     }
-
 
     public Rectangle getBoundary() {
         final double width = maxX - minX;
