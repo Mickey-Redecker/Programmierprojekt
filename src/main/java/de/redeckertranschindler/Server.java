@@ -126,7 +126,7 @@ public class Server {
         final List<List<Double>> resList = new ArrayList<>();
 
         final double[][] coordinates = g.getNodes();
-        final DijkstraResult dijkstraResult = g.oneToOneDijkstra(src, target);
+        final DijkstraResult dijkstraResult = g.dijkstra(src, target);
         int currentNode = target;
 
         while (currentNode != src) {

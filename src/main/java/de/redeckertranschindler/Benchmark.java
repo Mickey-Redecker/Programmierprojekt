@@ -57,7 +57,7 @@ public class Benchmark {
                 final int oneToOneTargetNodeId = Integer.parseInt(currLine.substring(currLine.indexOf(" ") + 1));
                 // -----
                 final int oneToOneDistance = g.dijkstra(oneToOneSourceNodeId,
-                        oneToOneTargetNodeId)[oneToOneTargetNodeId];
+                        oneToOneTargetNodeId).distance[oneToOneTargetNodeId];
                 // -----
                 System.out.println(oneToOneDistance);
             }
@@ -71,7 +71,7 @@ public class Benchmark {
         System.out.println("Computing one-to-all Dijkstra from node id " + sourceNodeId);
         final long oneToAllStart = System.currentTimeMillis();
         // -----
-        final int[] distancesFromStart = g.dijkstra(sourceNodeId);
+        final int[] distancesFromStart = g.dijkstra(sourceNodeId).distance;
         // -----
         final long oneToAllEnd = System.currentTimeMillis();
         System.out.println("\tone-to-all Dijkstra took " + (oneToAllEnd - oneToAllStart) + "ms");

@@ -151,7 +151,7 @@ public class Graph {
                 graphFilePath, n, m);
     }
 
-    public int[] dijkstra(final int startId) {
+    public DijkstraResult dijkstra(final int startId) {
         return dijkstra(startId, -1);
     }
 
@@ -162,7 +162,7 @@ public class Graph {
      * @param endId
      * @return shortest distances from starting node to all nodes in graph
      */
-    public int[] dijkstra(final int startId, final int endId) {
+    public DijkstraResult dijkstra(final int startId, final int endId) {
 
         final int[] distances = new int[n];
         final int[] previousNode = new int[n];
@@ -188,7 +188,8 @@ public class Graph {
             final int srcNode = entry.id;
 
             if (endId >= 0 && srcNode == endId) {
-                return distances;
+                return new DijkstraResult(distances, previousNode);
+
             }
 
             if (!finished[srcNode]) {
@@ -217,9 +218,7 @@ public class Graph {
             }
         }
 
-        // return new DijkstraResult(distances, previousNode);
-        return distances;
-
+        return new DijkstraResult(distances, previousNode);
     }
 
     // public List<List<Integer>> getshortestPath(final int start, final int target)
