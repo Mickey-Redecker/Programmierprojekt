@@ -46,14 +46,6 @@ public class Server {
 
     }
 
-    private void handleIndexRequest(final HttpExchange exchange) throws IOException {
-        final String response = "Hi there!";
-        exchange.sendResponseHeaders(200, response.getBytes().length);
-        final OutputStream os = exchange.getResponseBody();
-        os.write(response.getBytes());
-        os.close();
-    }
-
     private void handleClosestRequest(final HttpExchange exchange) throws IOException {
         final URI requestURI = exchange.getRequestURI();
         final String query = requestURI.getQuery();
@@ -161,15 +153,17 @@ public class Server {
     public void handlePages(HttpExchange t) throws IOException {
         String root = "src/main/resources";
         URI uri = t.getRequestURI();
+        System.out.println(uri.getPath() + " ist hier");
         File file = new File(root + uri.getPath()).getCanonicalFile();
-        if (!file.getPath().startsWith(root)) {
-            // Suspected path traversal attack: reject with 403 error.
-            String response = "403 (Forbidden)\n";
-            t.sendResponseHeaders(403, response.length());
-            OutputStream os = t.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-        } else if (!file.isFile()) {
+        // if (!file.getPath().startsWith(root)) {
+        // // Suspected path traversal attack: reject with 403 error.
+        // String response = "403 (Forbidden)\n";
+        // t.sendResponseHeaders(403, response.length());
+        // OutputStream os = t.getResponseBody();
+        // os.write(response.getBytes());
+        // os.close();
+        // } else
+        if (!file.isFile()) {
             // Object does not exist or is not a file: reject with 404 error.
             String response = "404 (Not Found)\n";
             t.sendResponseHeaders(404, response.length());
