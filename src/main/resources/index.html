@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Map</title>
+
+    <link rel="stylesheet" href="./leaflet/leaflet.css" />
+    <script src="./leaflet/leaflet.js"></script>
+
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+
+  <body>
+    <div id="container">
+      <div id="map"></div>
+
+      <div id="sidebar">
+        <div id="control-container">
+          <div style="height: 5%"></div>
+
+          <div class="button" id="buttonStartPosition">Startpunkt setzen</div>
+          <div class="coordinate-field" id="startPosition">
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+          </div>
+
+          <div style="height: 5%"></div>
+
+          <div class="button" id="buttonEndPosition">Endpunkt setzen</div>
+          <div class="coordinate-field" id="endPosition">
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+          </div>
+
+          <div class="button" id="button-reset">Marker zurücksetzen</div>
+        </div>
+
+        <div id="info-box">
+          <h3>Programmierprojekt</h3>
+          <p>Danny Tran, Mickey Redecker, Simon Schindler</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* global Variables*/
+      const clickedColor = "#279e9e";
+
+      let startMarker;
+      let endMarker;
+
+      let settingStart = false;
+      let settingEnd = false;
+
+      /*server requests*/
+      const placeMarker = (marker) => {
+        req = new XMLHttpRequest();
+        req.onreadystatechange = () => {
+          if (this.status === 200 && this.readyState === 4) {
+            let data = JSON.parse(req.response);
+            // console.log(data);
+            if (marker == startMarker) {
+              setStartPos(data);
+            } else if (marker == endMarker) {
+              setEndPos(data);
+            }
+          }
+        };
+        // req.open(
+        //   "GET",
+        //   `/node?lat=${marker.getLatLng().lat}&lon=${marker.getLatLng().lng}`,
+        //   true
+        // );
+        req.send();
+      };
+
+      const oneToAllDijkstra = (marker) => {
+        req = new XMLHttpRequest();
+        req.onreadystatechange = () => {
+          if (this.status === 200 && this.readyState === 4) {
+            let data = JSON.parse(req.response);
+            // console.log(data);
+            // if (marker == startMarker) {
+            //   setStartPos(data);
+            // } else if (marker == endMarker) {
+            //   setEndPos(data);
+            // }
+          }
+        };
+        // req.open(
+        //   "GET",
+        //   `/node?lat=${marker.getLatLng().lat}&lon=${marker.getLatLng().lng}`,
+        //   true
+        // );
+        req.send();
+      };
+
+      /*init map*/
+      let map = L.map("map").setView([48.745142, 9.106663], 15);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          'Map Data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        useCache: true,
+      }).addTo(map);
+
+      /*control logic*/
+      const setStartPos = (coords) => {
+        startMarker.setLatLng(coords);
+        // document.getElementById("startPosition").innerText =
+        // coords.lat + " " + coords.lng;
+        document.getElementById(
+          "startPosition"
+        ).innerHTML = `<p>${coords.lat}</p><p>${coords.lng}</p>`;
+      };
+
+      document.getElementById("buttonStartPosition").onclick = (e) => {
+        if (!settingEnd) {
+          settingStart = !settingStart;
+          e.target.style.backgroundColor = settingStart ? clickedColor : null;
+        }
+      };
+
+      const setEndPos = (coords) => {
+        endMarker.setLatLng(coords);
+        document.getElementById(
+          "endPosition"
+        ).innerHTML = `<p>${coords.lat}</p><p>${coords.lng}</p>`;
+      };
+
+      document.getElementById("buttonEndPosition").onclick = (e) => {
+        if (!settingStart) {
+          settingEnd = !settingEnd;
+          e.target.style.backgroundColor = settingEnd ? clickedColor : null;
+        }
+      };
+
+      document.getElementById("button-reset").onclick = (e) => {
+        settingEnd = false;
+        settingStart = false;
+        if (startMarker) startMarker.remove();
+        if (endMarker) endMarker.remove();
+        startMarker = undefined;
+        endMarker = undefined;
+        document.getElementById("buttonStartPosition").style.backgroundColor =
+          null;
+        document.getElementById(
+          "startPosition"
+        ).innerHTML = `<p>&nbsp;</p><p>&nbsp;</p>`;
+        document.getElementById("buttonEndPosition").style.backgroundColor =
+          null;
+        document.getElementById(
+          "endPosition"
+        ).innerHTML = `<p>&nbsp;</p><p>&nbsp;</p>`;
+      };
+
+      /*map control*/
+      const onMapClick = (e) => {
+        if (settingStart) {
+          settingStart = false;
+          document.getElementById("buttonStartPosition").style.backgroundColor =
+            null;
+          if (!startMarker) {
+            startMarker = L.marker(e.latlng, {
+              title: "end marker",
+              draggable: true,
+            });
+            startMarker.on("drag", () => {
+              setStartPos(startMarker.getLatLng());
+            });
+            startMarker.on("moveend", () => {
+              setStartPos(startMarker.getLatLng());
+            });
+          }
+          setStartPos(e.latlng);
+          startMarker.addTo(map);
+        } else if (settingEnd) {
+          settingEnd = false;
+          document.getElementById("buttonEndPosition").style.backgroundColor =
+            null;
+          if (!endMarker) {
+            endMarker = L.marker(e.latlng, {
+              title: "start marker",
+              draggable: true,
+            });
+            endMarker.on("drag", () => {
+              setEndPos(endMarker.getLatLng());
+            });
+            endMarker.on("moveend", () => {
+              setEndPos(endMarker.getLatLng());
+            });
+          }
+          setEndPos(e.latlng);
+          endMarker.addTo(map);
+        }
+      };
+
+      map.on("click", onMapClick);
+    </script>
+  </body>
+</html>
