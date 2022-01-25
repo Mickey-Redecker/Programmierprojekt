@@ -13,6 +13,7 @@ import de.redeckertranschindler.util.DijkstraResult;
 import de.redeckertranschindler.util.Distance;
 import de.redeckertranschindler.util.Point;
 import de.redeckertranschindler.util.Rectangle;
+import de.redeckertranschindler.util.Tupel;
 
 public class Graph {
 
@@ -53,12 +54,12 @@ public class Graph {
     private final double[][] coordinates;
 
     /**
-     * An offset for each Node to know where to iterate through the adjacencylist
+     * An offset for each Node to know where to iterate through the AdjacencyList
      */
     private final int[] offset;
 
     /**
-     * Adjacencylist of all Edges
+     * AdjacencyList of all Edges
      * 
      * First dimension: information
      * Second dimension: Node-Id
@@ -68,7 +69,7 @@ public class Graph {
     /**
      * Generates a Graph ready to use!
      * 
-     * @param graphFilePath path to the specificly formated .fmi file
+     * @param graphFilePath path to the specific formatted .fmi file
      * @throws IOException
      */
     public Graph(final String graphFilePath) throws IOException {
@@ -77,7 +78,7 @@ public class Graph {
         final FileReader graphFileReader = new FileReader(graphFilePath);
         final BufferedReader graphReader = new BufferedReader(graphFileReader);
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) { // skip first 5 lines of .fmi file
             graphReader.readLine();
         }
 
@@ -95,7 +96,7 @@ public class Graph {
 
         for (int i = 0; i < n; i++) {
             final String data = graphReader.readLine();
-            final String[] parts = data.split(" ");
+            final String[] parts = data.split(" "); // skip white spaces
 
             final int id = Integer.parseInt(parts[0]);
             final double x = Double.parseDouble(parts[2]);
@@ -150,77 +151,27 @@ public class Graph {
                 graphFilePath, n, m);
     }
 
-    public DijkstraResult oneToOneDijkstra(final int startId, final int endId) {
-
-        final int[] distances = new int[n];
-        final int[] previousNode = new int[n];
-        final boolean[] finished = new boolean[n];
-
-        final Queue<Integer> priorityQueue = new PriorityQueue<>(n, new Comparator<Integer>() {
-            @Override
-            public int compare(final Integer node1, final Integer node2) {
-                return distances[node1] - distances[node2];
-            }
-        });
-
-        previousNode[startId] = startId;
-        for (int i = 0; i < n; i++) {
-            distances[i] = Integer.MAX_VALUE;
-        }
-        distances[startId] = 0;
-        priorityQueue.add(startId);
-
-        while (!priorityQueue.isEmpty()) {
-
-            final int srcNode = priorityQueue.poll();
-
-            // Difference to OneToAll
-            if (srcNode == endId) {
-                break;
-            }
-            // ----------------------
-
-            if (!finished[srcNode]) {
-
-                finished[srcNode] = true;
-
-                final int startOfEdges = offset[srcNode];
-                final int endOfEdges = srcNode == n - 1 ? m : offset[srcNode + 1];
-
-                for (int i = startOfEdges; i < endOfEdges; i++) {
-                    final int weight = adjacencyList[WEIGHT][i];
-                    final int targetNode = adjacencyList[TARGETNODE][i];
-
-                    if (distances[targetNode] > distances[srcNode] + weight) {
-                        distances[targetNode] = distances[srcNode] + weight;
-                        previousNode[targetNode] = srcNode;
-
-                        priorityQueue.add(targetNode);
-                        continue;
-                    }
-
-                    if (!finished[targetNode]) {
-                        priorityQueue.add(targetNode);
-                    }
-
-                }
-
-            }
-        }
-
-        return new DijkstraResult(distances, previousNode, endId);
+    public int[] dijkstra(final int startId) {
+        return dijkstra(startId, -1);
     }
 
-    public DijkstraResult oneToAllDijkstra(final int startId) {
+    /**
+     * dijkstra implementation
+     * 
+     * @param startId
+     * @param endId
+     * @return shortest distances from starting node to all nodes in graph
+     */
+    public int[] dijkstra(final int startId, final int endId) {
 
         final int[] distances = new int[n];
         final int[] previousNode = new int[n];
         final boolean[] finished = new boolean[n];
 
-        final Queue<Integer> priorityQueue = new PriorityQueue<>(n, new Comparator<Integer>() {
+        final Queue<Tupel> priorityQueue = new PriorityQueue<>(n, new Comparator<Tupel>() {
             @Override
-            public int compare(final Integer node1, final Integer node2) {
-                return distances[node1] - distances[node2];
+            public int compare(final Tupel node1, final Tupel node2) {
+                return node1.distance - node2.distance;
             }
         });
 
@@ -229,11 +180,16 @@ public class Graph {
             distances[i] = Integer.MAX_VALUE;
         }
         distances[startId] = 0;
-        priorityQueue.add(startId);
+        priorityQueue.add(new Tupel(startId, 0));
 
         while (!priorityQueue.isEmpty()) {
 
-            final int srcNode = priorityQueue.poll();
+            final Tupel entry = priorityQueue.poll();
+            final int srcNode = entry.id;
+
+            if (endId >= 0 && srcNode == endId) {
+                return distances;
+            }
 
             if (!finished[srcNode]) {
 
@@ -250,20 +206,19 @@ public class Graph {
                         distances[targetNode] = distances[srcNode] + weight;
                         previousNode[targetNode] = srcNode;
 
-                        priorityQueue.add(targetNode);
+                        priorityQueue.add(new Tupel(targetNode, distances[targetNode]));
                         continue;
                     }
 
                     if (!finished[targetNode]) {
-                        priorityQueue.add(targetNode);
+                        priorityQueue.add(new Tupel(targetNode, distances[targetNode]));
                     }
-
                 }
-
             }
         }
 
-        return new DijkstraResult(distances, previousNode);
+        // return new DijkstraResult(distances, previousNode);
+        return distances;
 
     }
 
