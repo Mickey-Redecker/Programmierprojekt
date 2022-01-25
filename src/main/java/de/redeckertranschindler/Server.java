@@ -81,8 +81,8 @@ public class Server {
         final List<Double> coordinateList = new ArrayList<>();
         final double[][] coordinates = g.getNodes();
 
-        coordinateList.add(coordinates[X][node]);
         coordinateList.add(coordinates[Y][node]);
+        coordinateList.add(coordinates[X][node]);
 
         final String response = Integer.toString(node) + """
 
@@ -131,15 +131,15 @@ public class Server {
 
         while (currentNode != src) {
             final List<Double> point = new ArrayList<>();
-            point.add(coordinates[X][currentNode]);
             point.add(coordinates[Y][currentNode]);
+            point.add(coordinates[X][currentNode]);
             resList.add(point);
             currentNode = dijkstraResult.previousNodes[currentNode];
         }
 
         final List<Double> point = new ArrayList<>();
-        point.add(coordinates[X][src]);
         point.add(coordinates[Y][src]);
+        point.add(coordinates[X][src]);
         resList.add(point);
 
         final String response = """
