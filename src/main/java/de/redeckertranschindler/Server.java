@@ -48,8 +48,7 @@ public class Server {
         closestContext.setHandler(this::handleClosestRequest);
 
         server.start();
-        System.out.println("server started");
-        System.out.println("http://localhost:80/index.html");
+        System.out.println("server started on: http://localhost:" + port + "/index.html");
     }
 
     private void handleClosestRequest(final HttpExchange exchange) throws IOException {

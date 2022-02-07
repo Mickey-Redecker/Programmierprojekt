@@ -5,7 +5,9 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
         try {
-            new Server("E:\\Programmierprojekt\\germany.fmi", 80);
+            final String graphPath = args[1];
+            final int port = Integer.parseInt(args[3]);
+            new Server(graphPath, port);
         } catch (IOException e) {
             e.printStackTrace();
         }
