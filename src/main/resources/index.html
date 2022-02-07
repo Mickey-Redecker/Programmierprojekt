@@ -100,11 +100,11 @@
               setStartPos(L.latLng(data.coordinates[1], data.coordinates[0]));
               startNodeId = id;
             } else if (marker == endMarker) {
-              let pathShown = pathIsShown;
+              const pathShown = pathIsShown ? true : false;
               setEndPos(L.latLng(data.coordinates[1], data.coordinates[0]));
               endNodeId = id;
               if (dijkstraCalculated && pathShown) {
-                pathTo(marker);
+                pathTo(endMarker);
               }
             }
           }
@@ -169,8 +169,12 @@
       };
 
       document.getElementById("button-showPath").onclick = (e) => {
-        if (startMarker && endMarker) {
+        if (startMarker && endMarker && !pathIsShown) {
           pathTo(endMarker);
+        } else if (pathIsShown) {
+          if (path) path.remove();
+          path = undefined;
+          pathIsShown = false;
         }
       };
 
@@ -200,7 +204,6 @@
 
         if (path) path.remove();
         path = undefined;
-        pathIsShown = false;
         document.getElementById(
           "endPosition"
         ).innerHTML = `<p>${coords.lat.toFixed(8)}</p><p>${coords.lng.toFixed(
@@ -221,6 +224,7 @@
 
         if (path) path.remove();
         path = undefined;
+        pathIsShown = false;
 
         if (startMarker) startMarker.remove();
         if (endMarker) endMarker.remove();
@@ -256,12 +260,10 @@
             });
             startMarker.on("moveend", () => {
               placeMarker(startMarker);
-              // setStartPos(startMarker.getLatLng());
             });
+            placeMarker(startMarker);
+            startMarker.addTo(map);
           }
-          placeMarker(startMarker);
-          // setStartPos(e.latlng);
-          startMarker.addTo(map);
         } else if (settingEnd) {
           settingEnd = false;
           document.getElementById("buttonEndPosition").style.backgroundColor =
@@ -276,12 +278,10 @@
             });
             endMarker.on("moveend", () => {
               placeMarker(endMarker);
-              // setEndPos(endMarker.getLatLng());
             });
+            placeMarker(endMarker);
+            endMarker.addTo(map);
           }
-          placeMarker(endMarker);
-          // setEndPos(e.latlng);
-          endMarker.addTo(map);
         }
       };
 
