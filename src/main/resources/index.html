@@ -63,10 +63,25 @@
       let settingEnd = false;
 
       let path;
+      let pathIsShown = false;
 
       const setRunning = (state) => {
         dijkstraRunning = state;
-        // button color
+        if (state) {
+          document.getElementById("buttonStartPosition").className =
+            "button_grey";
+          document.getElementById("buttonEndPosition").className =
+            "button_grey";
+          document.getElementById("button-dijkstra").className = "button_grey";
+          document.getElementById("button-showPath").className = "button_grey";
+          document.getElementById("button-reset").className = "button_grey";
+        } else {
+          document.getElementById("buttonStartPosition").className = "button";
+          document.getElementById("buttonEndPosition").className = "button";
+          document.getElementById("button-dijkstra").className = "button";
+          document.getElementById("button-showPath").className = "button";
+          document.getElementById("button-reset").className = "button";
+        }
       };
       const setDijkstraCalculated = (state) => {
         dijkstraCalculated = state;
@@ -85,8 +100,12 @@
               setStartPos(L.latLng(data.coordinates[1], data.coordinates[0]));
               startNodeId = id;
             } else if (marker == endMarker) {
+              let pathShown = pathIsShown;
               setEndPos(L.latLng(data.coordinates[1], data.coordinates[0]));
               endNodeId = id;
+              if (dijkstraCalculated && pathShown) {
+                pathTo(marker);
+              }
             }
           }
         };
@@ -126,6 +145,7 @@
                   return { color: "#234234" };
                 },
               }).addTo(map);
+              pathIsShown = true;
             }
           };
           req.open("GET", `/path?src=${startNodeId}&target=${endNodeId}`, true);
@@ -150,10 +170,8 @@
 
       document.getElementById("button-showPath").onclick = (e) => {
         if (startMarker && endMarker) {
-          console.log("show");
           pathTo(endMarker);
         }
-        console.log("or not");
       };
 
       const setStartPos = (coords) => {
@@ -161,6 +179,8 @@
         setDijkstraCalculated(false);
         if (path) path.remove();
         path = undefined;
+        pathIsShown = false;
+
         document.getElementById(
           "startPosition"
         ).innerHTML = `<p>${coords.lat.toFixed(8)}</p><p>${coords.lng.toFixed(
@@ -180,6 +200,7 @@
 
         if (path) path.remove();
         path = undefined;
+        pathIsShown = false;
         document.getElementById(
           "endPosition"
         ).innerHTML = `<p>${coords.lat.toFixed(8)}</p><p>${coords.lng.toFixed(
