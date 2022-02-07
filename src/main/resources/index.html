@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Map</title>
+
+    <link rel="stylesheet" href="./leaflet/leaflet.css" />
+    <script src="./leaflet/leaflet.js"></script>
+
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+
+  <body>
+    <div id="container">
+      <div id="map"></div>
+
+      <div id="sidebar">
+        <div id="control-container">
+          <div style="height: 5%"></div>
+
+          <div class="button" id="buttonStartPosition">Startpunkt setzen</div>
+          <div class="coordinate-field" id="startPosition">
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+          </div>
+
+          <div style="height: 5%"></div>
+
+          <div class="button" id="buttonEndPosition">Endpunkt setzen</div>
+          <div class="coordinate-field" id="endPosition">
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+          </div>
+
+          <div class="button" id="button-dijkstra">Wege berechnen</div>
+          <div class="button" id="button-showPath">Pfad anzeigen</div>
+          <div class="button" id="button-reset">Marker zurücksetzen</div>
+        </div>
+
+        <div id="info-box">
+          <h3>Programmierprojekt</h3>
+          <p>Danny Tran, Mickey Redecker, Simon Schindler</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* global Variables*/
+      const clickedColor = "#279e9e";
+
+      let dijkstraRunning = false;
+      let dijkstraCalculated = false;
+
+      let startMarker;
+      let endMarker;
+
+      let startNodeId;
+      let endNodeId;
+
+      let settingStart = false;
+      let settingEnd = false;
+
+      let path;
+      let pathIsShown = false;
+
+      const setRunning = (state) => {
+        dijkstraRunning = state;
+        if (state) {
+          document.getElementById("buttonStartPosition").className =
+            "button_grey";
+          document.getElementById("buttonEndPosition").className =
+            "button_grey";
+          document.getElementById("button-dijkstra").className = "button_grey";
+          document.getElementById("button-showPath").className = "button_grey";
+          document.getElementById("button-reset").className = "button_grey";
+        } else {
+          document.getElementById("buttonStartPosition").className = "button";
+          document.getElementById("buttonEndPosition").className = "button";
+          document.getElementById("button-dijkstra").className = "button";
+          document.getElementById("button-showPath").className = "button";
+          document.getElementById("button-reset").className = "button";
+        }
+      };
+      const setDijkstraCalculated = (state) => {
+        dijkstraCalculated = state;
+        // button color
+      };
+
+      /*server requests*/
+      const placeMarker = (marker) => {
+        req = new XMLHttpRequest();
+        req.onreadystatechange = function () {
+          if (this.status === 200 && this.readyState === 4) {
+            let split = req.response.indexOf("{");
+            let id = req.response.substring(0, split);
+            let data = JSON.parse(req.response.substring(split));
+            if (marker == startMarker) {
+              setStartPos(L.latLng(data.coordinates[1], data.coordinates[0]));
+              startNodeId = id;
+            } else if (marker == endMarker) {
+              const pathShown = pathIsShown ? true : false;
+              setEndPos(L.latLng(data.coordinates[1], data.coordinates[0]));
+              endNodeId = id;
+              if (dijkstraCalculated && pathShown) {
+                pathTo(endMarker);
+              }
+            }
+          }
+        };
+        req.open(
+          "GET",
+          `/closest?lat=${marker.getLatLng().lat}&lon=${
+            marker.getLatLng().lng
+          }`,
+          true
+        );
+        req.send();
+      };
+
+      const oneToAllDijkstra = () => {
+        if (startNodeId) {
+          setRunning(true);
+          req = new XMLHttpRequest();
+          req.onreadystatechange = function () {
+            if (this.status === 200 && this.readyState === 4) {
+              setRunning(false);
+              setDijkstraCalculated(true);
+            }
+          };
+          req.open("GET", `/dijkstra?src=${startNodeId}`, true);
+          req.send();
+        }
+      };
+
+      const pathTo = (marker) => {
+        if (dijkstraCalculated) {
+          req = new XMLHttpRequest();
+          req.onreadystatechange = function () {
+            if (this.status === 200 && this.readyState === 4) {
+              let data = JSON.parse(req.response);
+              path = L.geoJSON(data, {
+                style: function (feature) {
+                  return { color: "#234234" };
+                },
+              }).addTo(map);
+              pathIsShown = true;
+            }
+          };
+          req.open("GET", `/path?src=${startNodeId}&target=${endNodeId}`, true);
+          req.send();
+        }
+      };
+
+      /*init map*/
+      let map = L.map("map").setView([48.745142, 9.106663], 15);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          'Map Data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        useCache: true,
+      }).addTo(map);
+
+      /*control logic*/
+      document.getElementById("button-dijkstra").onclick = (e) => {
+        if (startMarker) {
+          oneToAllDijkstra(startMarker);
+        }
+      };
+
+      document.getElementById("button-showPath").onclick = (e) => {
+        if (startMarker && endMarker && !pathIsShown) {
+          pathTo(endMarker);
+        } else if (pathIsShown) {
+          if (path) path.remove();
+          path = undefined;
+          pathIsShown = false;
+        }
+      };
+
+      const setStartPos = (coords) => {
+        startMarker.setLatLng(coords);
+        setDijkstraCalculated(false);
+        if (path) path.remove();
+        path = undefined;
+        pathIsShown = false;
+
+        document.getElementById(
+          "startPosition"
+        ).innerHTML = `<p>${coords.lat.toFixed(8)}</p><p>${coords.lng.toFixed(
+          8
+        )}</p>`;
+      };
+
+      document.getElementById("buttonStartPosition").onclick = (e) => {
+        if (!settingEnd) {
+          settingStart = !settingStart;
+          e.target.style.backgroundColor = settingStart ? clickedColor : null;
+        }
+      };
+
+      const setEndPos = (coords) => {
+        endMarker.setLatLng(coords);
+
+        if (path) path.remove();
+        path = undefined;
+        document.getElementById(
+          "endPosition"
+        ).innerHTML = `<p>${coords.lat.toFixed(8)}</p><p>${coords.lng.toFixed(
+          8
+        )}</p>`;
+      };
+
+      document.getElementById("buttonEndPosition").onclick = (e) => {
+        if (!settingStart) {
+          settingEnd = !settingEnd;
+          e.target.style.backgroundColor = settingEnd ? clickedColor : null;
+        }
+      };
+
+      document.getElementById("button-reset").onclick = (e) => {
+        settingEnd = false;
+        settingStart = false;
+
+        if (path) path.remove();
+        path = undefined;
+        pathIsShown = false;
+
+        if (startMarker) startMarker.remove();
+        if (endMarker) endMarker.remove();
+        startMarker = undefined;
+        endMarker = undefined;
+        startNodeId = undefined;
+        endNodeId = undefined;
+        document.getElementById("buttonStartPosition").style.backgroundColor =
+          null;
+        document.getElementById(
+          "startPosition"
+        ).innerHTML = `<p>&nbsp;</p><p>&nbsp;</p>`;
+        document.getElementById("buttonEndPosition").style.backgroundColor =
+          null;
+        document.getElementById(
+          "endPosition"
+        ).innerHTML = `<p>&nbsp;</p><p>&nbsp;</p>`;
+      };
+
+      /*map control*/
+      const onMapClick = (e) => {
+        if (settingStart) {
+          settingStart = false;
+          document.getElementById("buttonStartPosition").style.backgroundColor =
+            null;
+          if (!startMarker) {
+            startMarker = L.marker(e.latlng, {
+              title: "end marker",
+              draggable: true,
+            });
+            startMarker.on("drag", () => {
+              setStartPos(startMarker.getLatLng());
+            });
+            startMarker.on("moveend", () => {
+              placeMarker(startMarker);
+            });
+            placeMarker(startMarker);
+            startMarker.addTo(map);
+          }
+        } else if (settingEnd) {
+          settingEnd = false;
+          document.getElementById("buttonEndPosition").style.backgroundColor =
+            null;
+          if (!endMarker) {
+            endMarker = L.marker(e.latlng, {
+              title: "start marker",
+              draggable: true,
+            });
+            endMarker.on("drag", () => {
+              setEndPos(endMarker.getLatLng());
+            });
+            endMarker.on("moveend", () => {
+              placeMarker(endMarker);
+            });
+            placeMarker(endMarker);
+            endMarker.addTo(map);
+          }
+        }
+      };
+
+      map.on("click", onMapClick);
+    </script>
+  </body>
+</html>
