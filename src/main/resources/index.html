@@ -139,13 +139,15 @@
           req = new XMLHttpRequest();
           req.onreadystatechange = function () {
             if (this.status === 200 && this.readyState === 4) {
-              let data = JSON.parse(req.response);
-              path = L.geoJSON(data, {
-                style: function (feature) {
-                  return { color: "#234234" };
-                },
-              }).addTo(map);
-              pathIsShown = true;
+              if (req.response !== "not connected") {
+                let data = JSON.parse(req.response);
+                path = L.geoJSON(data, {
+                  style: function (feature) {
+                    return { color: "#234234" };
+                  },
+                }).addTo(map);
+                pathIsShown = true;
+              }
             }
           };
           req.open("GET", `/path?src=${startNodeId}&target=${endNodeId}`, true);
