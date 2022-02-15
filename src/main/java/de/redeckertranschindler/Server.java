@@ -169,6 +169,15 @@ public class Server {
             return;
         }
 
+        if (Integer.MAX_VALUE == dijkstraResult.distance[target]) {
+            final String response = "not connected";
+            exchange.sendResponseHeaders(200, response.getBytes().length);
+            final OutputStream os = exchange.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+            return;
+        }
+
         int currentNode = target;
 
         while (currentNode != src) {
